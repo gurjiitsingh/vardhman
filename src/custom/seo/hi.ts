@@ -1,7 +1,7 @@
 export const SEO = {
-  title: "Masala – Indian Restaurant in Gifhorn, Lower Saxony",
+  title: "Vardhman traders",
   description:
-    "Authentic Indian food at Masala Gifhorn. Order online for delivery or visit us in Lower Saxony.",
+    "Vardhman traders",
 };
 
 
@@ -13,13 +13,13 @@ export const BRANDING = {
   home_page_disclaimer:"",// "Food may differ from image.",
   brand: "Masala",
   tag_line: "Taste of India",
-  brand_name: "Pizzeria Milano Segle",
+  brand_name: "Vardhman Traders",
    poweredBy: "Powered by",
     poweredByUrl: "http://www.gstadeveloper.com",
     copyright: {
       prefix: "Copyright ©",
       suffix: "All Rights Reserved by",
-      company: "Pizzeria Milano Segle"
+      company: "Vardhman Traders"
     },
 
 
@@ -30,7 +30,7 @@ export const BRANDING = {
   copyright: {
     prefix: "Copyright ©",
     suffix: "All Rights Reserved by",
-    company: "Pizzeria Milano Segle",
+    company: "Vardhman Traders",
   },
 },
 

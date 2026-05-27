@@ -1,7 +1,7 @@
 export const SEO = {
-  title: "Pizzeria Milano Segle – ",
+  title: "Vardhman Traders – ",
   description:
-    "Authentic Indian food at Pizzeria Milano Segle Gifhorn. Order online for delivery or visit us in Lower Saxony.",
+    "Authentic Indian food at Vardhman Traders Gifhorn. Order online for delivery or visit us in Lower Saxony.",
 };
 
 
@@ -11,15 +11,15 @@ export const BRANDING = {
   offer_instruction: "",
   delivery_note: "Delivery is also available.",
   home_page_disclaimer:"",// "Food may differ from image.",
-  brand: "Pizzeria Milano Segle",
+  brand: "Vardhman Traders",
   tag_line: "",
-  brand_name: "Pizzeria Milano Segle ",
+  brand_name: "Vardhman Traders ",
    poweredBy: "Powered by",
     poweredByUrl: "http://www.gstadeveloper.com",
     copyright: {
       prefix: "Copyright ©",
       suffix: "All Rights Reserved by",
-      company: "Pizzeria Milano Segle "
+      company: "Vardhman Traders "
     },
 
 
@@ -30,7 +30,7 @@ export const BRANDING = {
   copyright: {
     prefix: "Copyright ©",
     suffix: "All Rights Reserved by",
-    company: "Pizzeria Milano Segle ",
+    company: "Vardhman Traders ",
   },
 },
 

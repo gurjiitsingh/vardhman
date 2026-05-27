@@ -19,7 +19,7 @@ export default function HeroSectionCustom() {
 
         <Image
           src="/images/hero-15.jpg"
-          alt="Restaurant background"
+          alt="Vardhman traders background"
           fill
           className="object-cover scale-105"
           priority
@@ -49,7 +49,7 @@ export default function HeroSectionCustom() {
               <h2
                 className={`${chicle.className} text-4xl md:text-6xl mb-3`}
               >
-                Pizzeria Milano Segle
+                Vardhman Traders
               </h2>
 
               {/* Subtitle */}
