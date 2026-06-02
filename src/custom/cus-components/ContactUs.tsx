@@ -160,20 +160,16 @@ export default function ContactUs({
           {/* Map Card */}
           <div className="overflow-hidden rounded-[32px] border border-neutral-200 bg-white shadow-[0_10px_40px_rgba(0,0,0,0.03)]">
 
-            <iframe
-              src={`https://maps.google.com/maps?q=${mapQuery}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-              width="100%"
-              height="100%"
-              className="min-h-[500px]"
-              loading="lazy"
-            />
+          
 
  <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3408.044073651938!2d75.57723000000001!3d31.330155899999994!2m3!1f0!2f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391a5b0036cd2741%3A0x440e6c494730f25d!2sVardhman%20traders!5e0!3m2!1sen!2sin!4v1780377689663!5m2!1sen!2sin"
-        width="100%"
-              height="100%"
-              className="min-h-[500px]"
-              loading="lazy"
+        title="Vardhman Traders Location"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3408.044073651938!2d75.57723000000001!3d31.330155899999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391a5b0036cd2741%3A0x440e6c494730f25d!2sVardhman%20traders!5e0!3m2!1sen!2sin!4v1780377689663!5m2!1sen!2sin"
+        className="w-full h-full"
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        allowFullScreen
+        style={{ border: 0 }}
       />
 
 
