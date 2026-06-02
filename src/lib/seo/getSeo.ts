@@ -29,7 +29,7 @@ export const getDynamicSEO = cache(async () => {
   // ✅ CLEAN DESCRIPTION
   const description = `Order online from ${outlet.outletName}${
     outlet.city ? ` in ${outlet.city}` : ""
-  }. Fresh food, fast delivery.`;
+  }`;
 
   return {
     title,

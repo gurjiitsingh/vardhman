@@ -1,205 +1,368 @@
 "use client";
+
 import Link from "next/link";
 import React from "react";
 import { useLanguage } from "@/store/LanguageContext";
-import { Cinzel, Lato, Roboto, Abel } from "next/font/google";
-// import { Montserrat, Oswald, Bebas_Neue, Anton, Poppins } from "next/font/google";
-// import { Great_Vibes, Pacifico, Dancing_Script } from "next/font/google";
+import {
+  Cinzel,
+  Lato,
+  Roboto,
+  Abel,
+} from "next/font/google";
 
-const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "600", "700"] });
-const lato = Lato({ subsets: ["latin"], weight: ["400", "700"] });
-const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"] });
-const abel = Abel({ subsets: ["latin"], weight: "400" });
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+
+const lato = Lato({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
+const abel = Abel({
+  subsets: ["latin"],
+  weight: "400",
+});
+
 const fonts = {
   Cinzel: cinzel,
   Abel: abel,
-  // Playfair: playfair,
-  // Cormorant: cormorant,
-  // Lora: lora,
-  // Montserrat: montserrat,
-  // Oswald: oswald,
-  // Bebas: bebas,
-  // Anton: anton,
-  // GreatVibes: vibes,
-  // Pacifico: pacifico,
-  // Dancing: dancing,
   Lato: lato,
   Roboto: roboto,
-  //Poppins: poppins,
 };
 
 const fontTitle =
-  fonts[process.env.NEXT_PUBLIC_FONT_TITLE as keyof typeof fonts] || cinzel;
-const fontDescription =
-  fonts[process.env.NEXT_PUBLIC_FONT_DESCRIPTION as keyof typeof fonts] || lato;
-const fontPrice =
-  fonts[process.env.NEXT_PUBLIC_FONT_PRICE as keyof typeof fonts] || roboto;
+  fonts[
+    process.env
+      .NEXT_PUBLIC_FONT_TITLE as keyof typeof fonts
+  ] || cinzel;
 
-type FooterLink = { href: string; name: string };
+const fontDescription =
+  fonts[
+    process.env
+      .NEXT_PUBLIC_FONT_DESCRIPTION as keyof typeof fonts
+  ] || lato;
+
+const fontPrice =
+  fonts[
+    process.env
+      .NEXT_PUBLIC_FONT_PRICE as keyof typeof fonts
+  ] || roboto;
+
+type FooterLink = {
+  href: string;
+  name: string;
+};
 
 type Props = {
   outlet?: any;
 };
 
-export default function Footer({ outlet }: Props) {
+export default function Footer({
+  outlet,
+}: Props) {
   const { TEXT, BRANDING } = useLanguage();
 
-  // Fallbacks
-const fallbackBrand = {
-  brand_name: outlet?.outletName || BRANDING?.brand_name || "",
-  poweredBy: BRANDING?.poweredBy || "Powered by",
-  poweredByUrl:
-    BRANDING?.poweredByUrl || "https://www.gstadeveloper.com",
-
-  copyright: {
-    prefix: BRANDING?.copyright?.prefix || "Copyright ©",
-    suffix:
-      BRANDING?.copyright?.suffix || "All Rights Reserved by",
-
-    // ✅ dynamic company
-    company:
+  const fallbackBrand = {
+    brand_name:
       outlet?.outletName ||
-      BRANDING?.copyright?.company ||
+      BRANDING?.brand_name ||
       "",
-  },
-};
+
+    poweredBy:
+      BRANDING?.poweredBy ||
+      "Powered by",
+
+    poweredByUrl:
+      BRANDING?.poweredByUrl ||
+      "https://www.gstadeveloper.com",
+
+    copyright: {
+      prefix:
+        BRANDING?.copyright?.prefix ||
+        "Copyright ©",
+
+      suffix:
+        BRANDING?.copyright?.suffix ||
+        "All Rights Reserved by",
+
+      company:
+        outlet?.outletName ||
+        BRANDING?.copyright?.company ||
+        "",
+    },
+  };
 
   const fallbackText = {
-    logo_alt: TEXT?.logo_alt || "Restaurant Logo",
+    logo_alt:
+      TEXT?.logo_alt || "Logo",
+
     sections: {
       links: {
-        title: BRANDING?.sections?.links?.title || "Links",
-        items: BRANDING?.sections?.links?.items || [
-          { name: "Home", href: "/" },
-          { name: "Menu", href: "/menu" },
-          { name: "About Us", href: "/about" },
-          { name: "Contact", href: "/contact" },
-          { name: "Table Reservation", href: "/reservation" },
-          { name: "Allergens", href: "/allergene" },
-        ],
+        title:
+          BRANDING?.sections?.links
+            ?.title || "Shop",
+
+        items:
+          BRANDING?.sections?.links
+            ?.items || [
+            {
+              name: "Home",
+              href: "/",
+            },
+            {
+              name: "Shop",
+              href: "/shop",
+            },
+            {
+              name: "Collections",
+              href: "/collection",
+            },
+            {
+              name: "About",
+              href: "/about",
+            },
+            {
+              name: "Contact",
+              href: "/contact",
+            },
+          ],
       },
+
       company: {
-        title: BRANDING?.sections?.company?.title || "Company",
-        items: BRANDING?.sections?.company?.items || [
-          { name: "Privacy Policy", href: "/privacy" },
-          { name: "Terms of Service", href: "#" },
-        ],
+        title:
+          BRANDING?.sections?.company
+            ?.title || "Company",
+
+        items:
+          BRANDING?.sections?.company
+            ?.items || [
+            {
+              name: "Privacy Policy",
+              href: "/privacy",
+            },
+            {
+              name: "Terms of Service",
+              href: "/terms",
+            },
+          ],
       },
+
       social: {
-        title: BRANDING?.sections?.social?.title || "Social Media",
+        title:
+          BRANDING?.sections?.social
+            ?.title || "Follow Us",
       },
     },
   };
-// 2B2E4A     navi dark color   d24a0f  orange
 
-const companyName =
-  outlet?.web
+  const companyName = outlet?.web
     ? new URL(
         outlet.web.startsWith("http")
           ? outlet.web
           : `https://${outlet.web}`
       ).hostname
-    : outlet?.outletName || fallbackBrand.brand_name;
-    
+    : outlet?.outletName ||
+      fallbackBrand.brand_name;
+
   return (
-    <footer className="relative pt-12 -mb-20 bg-[#ea9244] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="flex flex-col md:flex-row justify-between gap-8 md:gap-1">
-          {/* Logo + Brand */}
-          <div className="w-full">
-            <div className="flex flex-col items-start  md:w-[70%] gap-1  h-fit footer-border p-2 mx-1 rounded-2xl ">
-              <div className="flex items-center justify-start rounded-full">
-                <Link href="/">
-                 <img
-  className="h-24 md:h-24"
-  src={outlet?.logo || "/logo.png"}
-  alt={fallbackText.logo_alt}
-/>
-                </Link>
-              </div>
-              <div className="flex items-center h-fit">
-                <span className={` ${fontPrice.className} self-center text-md footer-text`}>
-                  {fallbackBrand.brand_name}
-                </span>
-              </div>
+    <footer className="relative overflow-hidden bg-white pt-30 pb-25">
+
+      {/* Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom_right,#ffffff,#faf9f7,#f5f5f4,#ffffff)]" />
+
+      {/* Luxury Glow */}
+      <div className="absolute top-0 left-0 w-[350px] h-[350px] bg-amber-100/40 blur-[120px] rounded-full" />
+
+      <div className="absolute bottom-0 right-0 w-[350px] h-[350px] bg-stone-100/60 blur-[120px] rounded-full" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+
+          {/* Brand */}
+          <div className="md:col-span-1">
+
+            <div className="bg-white/80 backdrop-blur-sm border border-neutral-200 rounded-3xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.03)]">
+
+              <Link href="/">
+                <img
+                  className="h-24 object-contain"
+                  src={
+                    outlet?.logo ||
+                    "/logo.png"
+                  }
+                  alt={
+                    fallbackText.logo_alt
+                  }
+                />
+              </Link>
+
+              <h3
+                className={`${fontPrice.className} text-lg font-medium text-neutral-900 mt-4`}
+              >
+                {
+                  fallbackBrand.brand_name
+                }
+              </h3>
+
+              <p className="text-sm text-neutral-500 mt-2 leading-relaxed">
+                Premium fashion for
+                modern lifestyles.
+              </p>
+
             </div>
+
           </div>
-          {/* Links Section */}
-          <div className="flex flex-col gap-2 w-full px-4">
-            <h3 className={`${fontTitle.className} tracking-wide text-xl font-bold uppercase pb-3`}>
-              {fallbackText.sections.links.title}
+
+          {/* Shop Links */}
+          <div>
+
+            <h3
+              className={`${fontTitle.className} text-sm font-semibold uppercase tracking-[4px] text-neutral-900 mb-5`}
+            >
+              {
+                fallbackText.sections
+                  .links.title
+              }
             </h3>
-            <ul className="flex flex-col gap-1">
+
+            <ul className="space-y-3">
+
               {fallbackText.sections.links.items.map(
-                (item: FooterLink, idx: number) => (
-                  <li
-                    key={idx}
-                    className={`pb-1 ${
-                      idx < fallbackText.sections.links.items.length - 1
-                        ? "footer-item-border"
-                        : ""
-                    }`}
-                  >
-                    <Link href={item.href} className={`${fontDescription.className}`}>{item.name}</Link>
+                (
+                  item: FooterLink,
+                  idx: number
+                ) => (
+                  <li key={idx}>
+                    <Link
+                      href={item.href}
+                      className={`${fontDescription.className} text-neutral-600 hover:text-black transition duration-300`}
+                    >
+                      {item.name}
+                    </Link>
                   </li>
                 )
               )}
+
             </ul>
+
           </div>
 
-          {/* Company Section */}
-          <div className="flex flex-col gap-2 w-full px-4">
-            <h3 className={`${fontTitle.className} tracking-wide text-xl font-bold uppercase pb-3`}>
-              {fallbackText.sections.company.title}
+          {/* Company */}
+          <div>
+
+            <h3
+              className={`${fontTitle.className} text-sm font-semibold uppercase tracking-[4px] text-neutral-900 mb-5`}
+            >
+              {
+                fallbackText.sections
+                  .company.title
+              }
             </h3>
-            <ul className="space-y-1">
+
+            <ul className="space-y-3">
+
               {fallbackText.sections.company.items.map(
-                (item: FooterLink, idx: number) => (
-                  <li
-                    key={idx}
-                    className={idx === 0 ? "footer-item-border pb-1" : ""}
-                  >
-                    <a rel="noopener noreferrer" className={`${fontDescription.className}`} href={item.href}>
+                (
+                  item: FooterLink,
+                  idx: number
+                ) => (
+                  <li key={idx}>
+                    <a
+                      href={item.href}
+                      rel="noopener noreferrer"
+                      className={`${fontDescription.className} text-neutral-600 hover:text-black transition duration-300`}
+                    >
                       {item.name}
                     </a>
                   </li>
                 )
               )}
+
             </ul>
+
           </div>
 
-          {/* Social Media */}
-          <div className="flex flex-col gap-2 w-full px-4">
-            <div className={`${fontTitle.className} tracking-wide text-xl font-bold uppercase pb-3`}>
-              {fallbackText.sections.social.title}
-            </div>
-            <div className="flex justify-start space-x-3">
-              {/* Add social media icons here */}
-            </div>
+          {/* Social */}
+          <div>
+
+            <h3
+              className={`${fontTitle.className} text-sm font-semibold uppercase tracking-[4px] text-neutral-900 mb-5`}
+            >
+              {
+                fallbackText.sections
+                  .social.title
+              }
+            </h3>
+
+            <p className="text-neutral-600 text-sm leading-relaxed">
+              Follow us on social media
+              for new arrivals, exclusive
+              drops and seasonal
+              collections.
+            </p>
+
           </div>
+
         </div>
+
+        {/* Bottom */}
+        <div className="border-t border-neutral-200 mt-16 pt-8">
+
+          <div className="flex flex-col items-center gap-3 text-center">
+
+            <p className="text-sm text-neutral-500">
+
+              {fallbackBrand.poweredBy}{" "}
+
+              <a
+                href={
+                  fallbackBrand.poweredByUrl
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-neutral-700 hover:text-black transition"
+              >
+                {
+                  new URL(
+                    fallbackBrand.poweredByUrl
+                  ).hostname
+                }
+              </a>
+
+            </p>
+
+            <p className="text-sm text-neutral-500">
+
+              {
+                fallbackBrand
+                  .copyright.prefix
+              }{" "}
+              {new Date().getFullYear()}{" "}
+              {
+                fallbackBrand
+                  .copyright.suffix
+              }{" "}
+
+              <span className="font-semibold text-neutral-800">
+                {companyName}
+              </span>
+
+            </p>
+
+          </div>
+
+        </div>
+
       </div>
 
-      {/* Footer Bottom */}
-      <div className="footer-bg-bottom mt-12 pt-3 pb-6">
-        <div className="container mx-auto flex flex-col items-center">
-          <p className="text-md footer-text-light">
-            {fallbackBrand.poweredBy}{" "}
-          <a
-  href={fallbackBrand.poweredByUrl}
-  target="_blank"
-  rel="noopener noreferrer"
->
-              {new URL(fallbackBrand.poweredByUrl).hostname}
-            </a>
-          </p>
-          <p className="text-md footer-text-light">
-            {fallbackBrand.copyright.prefix} {new Date().getFullYear()}{" "}
-            {fallbackBrand.copyright.suffix}{" "}
-            <b>{companyName}</b>
-          </p>
-        </div>
-      </div>
     </footer>
   );
 }

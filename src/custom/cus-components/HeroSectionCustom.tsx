@@ -36,7 +36,8 @@ export default function HeroSectionFashion() {
           {/* Tag */}
           <div className="flex items-center justify-center lg:justify-start gap-2 mb-5 text-neutral-500 text-xs sm:text-sm tracking-[3px] uppercase">
             <FaStar className="text-lime-600 text-[10px] sm:text-xs" />
-            New Fashion Collection
+            {/* New Fashion Collection */}
+            vardhman traders
           </div>
 
           {/* Heading */}
@@ -59,14 +60,14 @@ export default function HeroSectionFashion() {
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
 
             <Link
-              href="/shop"
+              href="/#order_now"
               className="w-full sm:w-auto text-center bg-black text-white hover:bg-neutral-800 px-8 py-3 rounded-full text-sm font-semibold transition duration-300 shadow-xl"
             >
               Shop Now
             </Link>
 
             <Link
-              href="/collection"
+              href="/#month_new"
               className="w-full sm:w-auto text-center border border-neutral-300 hover:bg-black hover:text-white text-black px-8 py-3 rounded-full text-sm font-semibold transition duration-300"
             >
               Explore Collection
@@ -139,7 +140,7 @@ export default function HeroSectionFashion() {
           </div>
 
           {/* Floating Badge */}
-          <div className="absolute left-2 sm:left-10 bottom-6 sm:bottom-16 lg:bottom-24 bg-white/80 backdrop-blur-xl border border-white px-4 sm:px-5 py-3 sm:py-4 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+          {/* <div className="absolute left-2 sm:left-10 bottom-6 sm:bottom-16 lg:bottom-24 bg-white/80 backdrop-blur-xl border border-white px-4 sm:px-5 py-3 sm:py-4 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
 
             <p className="text-neutral-900 text-xs sm:text-sm font-semibold">
               Summer 2026 Drop
@@ -149,7 +150,7 @@ export default function HeroSectionFashion() {
               Limited Edition Collection
             </p>
 
-          </div>
+          </div> */}
 
         </div>
 

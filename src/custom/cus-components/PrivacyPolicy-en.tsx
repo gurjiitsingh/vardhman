@@ -7,90 +7,136 @@ type Props = {
 };
 
 export default function PrivacyPolicy_en({ outlet }: Props) {
-  const name = outlet?.outletName || "Restaurant";
+  const name = outlet?.outletName || "Brand";
   const website = outlet?.web || "#";
   const email = outlet?.email || "info@example.com";
 
-    const formattedDate = outlet?.updatedAt
+  const formattedDate = outlet?.updatedAt
     ? new Date(outlet.updatedAt).toLocaleDateString("en-GB")
     : "";
-  return (
-    <div className="relative container mx-auto py-5 p-1">
-      <div className="max-w-3xl mx-auto px-4 py-10 text-gray-800">
 
-        <div className="my-8 text-sm">
-          🌍{" "}
-          <Link href="/privacy" className="text-blue-600 underline">
-            Cambiar a la versión en alemán
-          </Link>
+  return (
+    <section className="relative overflow-hidden bg-white py-20 md:py-28">
+
+      {/* Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom_right,#ffffff,#f8fafc,#f3f4f6,#ffffff)]" />
+
+      {/* Glow */}
+      <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-pink-100/60 blur-[130px] rounded-full" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-rose-100/50 blur-[130px] rounded-full" />
+
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-12">
+
+        {/* Header */}
+        <div className="text-center mb-14">
+
+          <span className="uppercase tracking-[4px] text-xs text-pink-600 font-medium">
+            Legal Information
+          </span>
+
+          <h1 className="text-4xl md:text-6xl font-light text-neutral-900 mt-4">
+            Privacy Policy
+          </h1>
+
+          <p className="text-neutral-500 mt-4 text-sm md:text-base">
+            How {name} collects, uses, and protects your information
+          </p>
+
         </div>
 
-        <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
+        {/* Content Card */}
+        <div className="bg-white border border-neutral-200 rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.06)] p-6 md:p-10 space-y-10">
 
-        <p className="mb-4">
-          At <strong>{name}</strong> (
-          <a href={website} className="text-blue-600 underline">
-            {website}
-          </a>
-          ), we take your privacy seriously. This page explains how we collect, use, and protect your personal data.
+          {/* Intro */}
+          <div className="text-neutral-600 leading-relaxed">
+            At <strong className="text-neutral-900">{name}</strong>, we respect your privacy.
+            This policy explains how we collect and use your personal data when you visit our website
+            or place an order through{" "}
+            <a href={website} className="text-pink-600 hover:underline">
+              {website}
+            </a>.
+          </div>
+
+          {/* Section 1 */}
+          <div>
+            <h2 className="text-xl font-semibold text-neutral-900 mb-2">
+              1. Information We Collect
+            </h2>
+            <p className="text-neutral-600 mb-3">
+              We collect only essential details required to process your order:
+            </p>
+            <ul className="list-disc pl-5 text-neutral-600 space-y-1">
+              <li>Email address</li>
+              <li>Order details</li>
+              <li>Delivery or pickup address</li>
+            </ul>
+          </div>
+
+          {/* Section 2 */}
+          <div>
+            <h2 className="text-xl font-semibold text-neutral-900 mb-2">
+              2. How We Use Your Data
+            </h2>
+            <ul className="list-disc pl-5 text-neutral-600 space-y-1">
+              <li>Processing and confirming orders</li>
+              <li>Customer support communication</li>
+              <li>Optional promotional offers (if subscribed)</li>
+            </ul>
+          </div>
+
+          {/* Section 3 */}
+          <div>
+            <h2 className="text-xl font-semibold text-neutral-900 mb-2">
+              3. Data Protection
+            </h2>
+            <p className="text-neutral-600">
+              We do not sell or share your personal data with third parties.
+              Your information is stored securely and used only for order-related purposes.
+            </p>
+          </div>
+
+          {/* Section 4 */}
+          <div>
+            <h2 className="text-xl font-semibold text-neutral-900 mb-2">
+              4. Your Rights
+            </h2>
+            <p className="text-neutral-600 mb-3">
+              You can request access, correction, or deletion of your data at any time.
+            </p>
+
+            <a
+              href={`mailto:${email}`}
+              className="inline-block text-pink-600 font-medium hover:underline"
+            >
+              {email}
+            </a>
+          </div>
+
+          {/* Contact */}
+          <div className="pt-6 border-t border-neutral-200">
+            <h2 className="text-xl font-semibold text-neutral-900 mb-2">
+              5. Contact
+            </h2>
+            <p className="text-neutral-600 mb-2">
+              For any privacy-related questions, contact us:
+            </p>
+
+            <a
+              href={`mailto:${email}`}
+              className="text-pink-600 font-medium hover:underline"
+            >
+              📧 {email}
+            </a>
+          </div>
+
+        </div>
+
+        {/* Footer Note */}
+        <p className="text-center text-xs text-neutral-400 mt-10">
+          Last updated: {formattedDate || "N/A"}
         </p>
 
-        <h2 className="text-xl font-semibold mt-6 mb-2">1. What Information We Collect</h2>
-        <p className="mb-4">We only collect information necessary for processing your order:</p>
-        <ul className="list-disc list-inside mb-4">
-          <li>Email address</li>
-          <li>Order details</li>
-          <li><strong>Address</strong> (for delivery or pickup)</li>
-        </ul>
-
-        <h2 className="text-xl font-semibold mt-6 mb-2">2. How We Use Your Information</h2>
-        <p className="mb-4">We use your data exclusively for the following purposes:</p>
-        <ul className="list-disc list-inside mb-4">
-          <li>Order processing and confirmation</li>
-          <li>Contacting you regarding your order</li>
-          <li>Sending promotional emails (if opted-in)</li>
-        </ul>
-
-        <h2 className="text-xl font-semibold mt-6 mb-2">3. Promotional Emails</h2>
-        <p className="mb-4">
-          We may occasionally send you exclusive offers via email. You can opt out anytime:
-        </p>
-        <ul className="list-disc list-inside mb-4">
-          <li>By clicking the unsubscribe link included in every email</li>
-          <li>Or by unchecking "Receive offers" during checkout</li>
-        </ul>
-
-        <h2 className="text-xl font-semibold mt-6 mb-2">4. Sharing of Data</h2>
-        <p className="mb-4">
-          We <strong>do not sell or share your data</strong> with any third parties for marketing purposes.
-        </p>
-
-        <h2 className="text-xl font-semibold mt-6 mb-2">5. Your Rights</h2>
-        <p className="mb-4">
-          You have the right to request access, correction, or deletion of your personal data at any time.
-          Please contact us at:
-        </p>
-        <p className="mb-4">
-          📧{" "}
-          <a href={`mailto:${email}`} className="text-blue-600 underline">
-            {email}
-          </a>
-        </p>
-
-        <h2 className="text-xl font-semibold mt-6 mb-2">6. Contact</h2>
-        <p className="mb-4">
-          If you have any questions regarding this privacy policy, feel free to reach out to us:
-          <br />
-          📧{" "}
-          <a href={`mailto:${email}`} className="text-blue-600 underline">
-            {email}
-          </a>
-        </p>
-
-        <p className="text-sm text-gray-500 mt-10">
-      Last updated: {formattedDate}
-    </p>
       </div>
-    </div>
+    </section>
   );
 }

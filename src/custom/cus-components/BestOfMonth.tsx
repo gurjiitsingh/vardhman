@@ -67,13 +67,12 @@ export default function TrendingCollection() {
   };
 
   return (
-    <section className="relative py-16 md:py-24 overflow-hidden bg-white">
+    <section id="month_new" className="relative py-16 md:py-24 overflow-hidden bg-white">
 
       {/* Background */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom_right,#ffffff,#f8fafc,#f3f4f6,#ffffff)]" />
+  <div className="absolute top-0 left-0 w-[350px] h-[350px] bg-rose-100/70 blur-[120px] rounded-full" />
 
-      {/* Color Glow */}
-      <div className="absolute top-0 left-0 w-[350px] h-[350px] bg-lime-100/70 blur-[120px] rounded-full" />
+<div className="absolute bottom-0 right-0 w-[350px] h-[350px] bg-pink-100/60 blur-[120px] rounded-full" />
 
       <div className="absolute bottom-0 right-0 w-[350px] h-[350px] bg-emerald-100/60 blur-[120px] rounded-full" />
 
