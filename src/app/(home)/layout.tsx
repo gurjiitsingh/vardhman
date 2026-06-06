@@ -79,6 +79,7 @@ export default function RootLayout({
                 <div className="z-50">
                   <SafeSideCart />
                 </div>
+            
 
                 <Header />
 

@@ -9,18 +9,22 @@ import Products from "@/components/level-1/Products";
 import BestOfMonth from "@/custom/cus-components/BestOfMonth";
 import ContactInfoWrapper from "@/components/ContactInfoWrapper";
 import ProductsWrapper from "@/components/ProductsWrapper";
+import HeroSlider from "@/custom/cus-components/HeroSlider";
+import CategorySliderLightRound from "@/components/level-1/CategorySliderLightRound";
 
 export default function Page() {
   return (
-    <main className="text-gray-900 font-sans">
+    <main className="pt-[100px] text-gray-900 font-sans">
 
       {/* ✅ Client-only animation init */}
       {/* <AOSInit /> */}
 
       {/* Sections */}
+         <CategorySliderLightRound  />
+      <HeroSlider />
       <HeroSectionCustom />
       <BestOfMonth />
-      <CategorySliderLight />
+   
       <Suspense fallback={<div>Loading...</div>}>
         <ProductsWrapper />
       </Suspense>
