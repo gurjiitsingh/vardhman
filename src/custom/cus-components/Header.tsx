@@ -13,6 +13,13 @@ export const headerFlags = {
   SHOW_LOGIN_BUTTON: process.env.NEXT_PUBLIC_SHOW_LOGIN_BUTTON === "1",
 };
 
+import { Cormorant_Garamond } from "next/font/google";
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 const FaBars = dynamic(
   () => import("react-icons/fa6").then((mod) => mod.FaBars),
   { ssr: false }
@@ -40,15 +47,27 @@ const Header = () => {
   return (
    <header className="fixed top-0 left-0 w-full z-50">
   {/* Pink Top Bar */}
-  <div
-    className={`bg-pink-400 transition-all duration-300 overflow-hidden ${
-      scrolled ? "h-0" : "h-14"
-    }`}
-  >
-    <div className="h-14 flex items-center justify-center">
-      Top Info Bar
-    </div>
+ <div
+  className={`bg-gradient-to-r from-pink-500 via-rose-400 to-pink-500 transition-all duration-300 overflow-hidden ${
+    scrolled ? "h-0" : "h-14"
+  }`}
+>
+  <div className="h-14 flex items-center justify-center">
+    <span
+      className={`
+        ${cormorant.className}
+        text-white
+        text-xl
+        md:text-2xl
+        tracking-[4px]
+        font-semibold
+        italic
+      `}
+    >
+      ✦ Vardhman Traders ✦
+    </span>
   </div>
+</div>
 
   {/* Main Header */}
   <div className="bg-white shadow-sm h-20 relative">

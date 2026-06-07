@@ -11,23 +11,34 @@ import ContactInfoWrapper from "@/components/ContactInfoWrapper";
 import ProductsWrapper from "@/components/ProductsWrapper";
 import HeroSlider from "@/custom/cus-components/HeroSlider";
 import CategorySliderLightRound from "@/components/level-1/CategorySliderLightRound";
+import FeaturesSection from "@/custom/cus-components/FeaturesSection";
+import FashionCategories from "@/custom/cus-components/FashionCategories";
+import LuxuryDivider from "@/custom/cus-components/LuxuryDivider";
 
 export default function Page() {
   return (
-    <main className="pt-[100px] text-gray-900 font-sans">
+    <main className="pt-[80px] text-gray-900 font-sans">
 
       {/* ✅ Client-only animation init */}
       {/* <AOSInit /> */}
 
       {/* Sections */}
-         <CategorySliderLightRound  />
+      <CategorySliderLightRound />
       <HeroSlider />
-      <HeroSectionCustom />
-      <BestOfMonth />
-   
+        <FashionCategories />
+      <FeaturesSection />
+
+    
+      <LuxuryDivider />
+      <CategorySliderLight />
       <Suspense fallback={<div>Loading...</div>}>
         <ProductsWrapper />
       </Suspense>
+
+      <HeroSectionCustom />
+      <BestOfMonth />
+
+
 
       {/* ✅ Server async component with streaming */}
       <Suspense fallback={<div className="h-40" />}>

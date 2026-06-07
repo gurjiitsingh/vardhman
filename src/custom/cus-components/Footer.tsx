@@ -173,14 +173,14 @@ export default function Footer({
 
   return (
     <footer className="relative overflow-hidden bg-white pt-30 pb-25">
-
+<div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
       {/* Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom_right,#ffffff,#faf9f7,#f5f5f4,#ffffff)]" />
 
       {/* Luxury Glow */}
-      <div className="absolute top-0 left-0 w-[350px] h-[350px] bg-amber-100/40 blur-[120px] rounded-full" />
+    <div className="absolute top-0 left-0 w-[350px] h-[350px] bg-pink-100/50 blur-[120px] rounded-full" />
 
-      <div className="absolute bottom-0 right-0 w-[350px] h-[350px] bg-stone-100/60 blur-[120px] rounded-full" />
+<div className="absolute bottom-0 right-0 w-[350px] h-[350px] bg-rose-100/50 blur-[120px] rounded-full" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
 
@@ -189,14 +189,13 @@ export default function Footer({
           {/* Brand */}
           <div className="md:col-span-1">
 
-            <div className="bg-white/80 backdrop-blur-sm border border-neutral-200 rounded-3xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.03)]">
-
+      <div className="bg-white/80 backdrop-blur-xl border border-pink-100 rounded-3xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.04)]">
               <Link href="/">
                 <img
                   className="h-24 object-contain"
                   src={
                     outlet?.logo ||
-                    "/logo.png"
+                    "/logo.jpg"
                   }
                   alt={
                     fallbackText.logo_alt
@@ -204,9 +203,9 @@ export default function Footer({
                 />
               </Link>
 
-              <h3
-                className={`${fontPrice.className} text-lg font-medium text-neutral-900 mt-4`}
-              >
+        <h3
+  className={`${fontPrice.className} text-lg font-medium text-pink-700 mt-4`}
+>
                 {
                   fallbackBrand.brand_name
                 }
@@ -225,7 +224,7 @@ export default function Footer({
           <div>
 
             <h3
-              className={`${fontTitle.className} text-sm font-semibold uppercase tracking-[4px] text-neutral-900 mb-5`}
+              className={`${fontTitle.className} text-sm font-semibold uppercase tracking-[4px] text-pink-700 mb-5`}
             >
               {
                 fallbackText.sections
@@ -259,7 +258,7 @@ export default function Footer({
           <div>
 
             <h3
-              className={`${fontTitle.className} text-sm font-semibold uppercase tracking-[4px] text-neutral-900 mb-5`}
+              className={`${fontTitle.className} text-sm font-semibold uppercase tracking-[4px] text-pink-700 mb-5`}
             >
               {
                 fallbackText.sections
@@ -294,7 +293,7 @@ export default function Footer({
           <div>
 
             <h3
-              className={`${fontTitle.className} text-sm font-semibold uppercase tracking-[4px] text-neutral-900 mb-5`}
+              className={`${fontTitle.className} text-sm font-semibold uppercase tracking-[4px] text-pink-700 mb-5`}
             >
               {
                 fallbackText.sections

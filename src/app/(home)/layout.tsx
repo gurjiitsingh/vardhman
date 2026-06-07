@@ -25,25 +25,37 @@ export async function generateMetadata(): Promise<Metadata> {
   const dynamicSEO = await getDynamicSEO();
 
   const title = dynamicSEO?.title || SEO.title;
-  const description = dynamicSEO?.description || SEO.description;
+  const description =
+    dynamicSEO?.description || SEO.description;
 
-  const url = dynamicSEO?.url || "";
-  const ogImage = dynamicSEO?.ogImage || "/og-image.jpg";
+  const siteUrl =
+    dynamicSEO?.url ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "https://yourdomain.com";
+
+  const ogImage =
+    dynamicSEO?.ogImage ||
+    `${siteUrl}/og-image.jpg`;
 
   return {
     title,
     description,
 
+    metadataBase: new URL(siteUrl),
+
     openGraph: {
       title,
       description,
-      url,
+      url: siteUrl,
       siteName: title,
+      type: "website",
+
       images: [
         {
           url: ogImage,
           width: 1200,
           height: 630,
+          alt: title,
         },
       ],
     },
@@ -55,59 +67,4 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [ogImage],
     },
   };
-}
-
-// ✅ ADD THIS LINE (VERY IMPORTANT)
-export const revalidate = 3600; // 1 hour cache
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
- 
-        <div className="text-[#2B2E4A]">
-          <div translate="no">
-            <UTMInitializer />
-
-            <Providers>
-              <BargerMenu />
-              <Modal />
-
-              <div className="flex flex-col gap-0 my-0">
-                <div className="z-50">
-                  <SafeSideCart />
-                </div>
-            
-
-                <Header />
-
-                {children}
-
-                <FooterWrapper />
-
-                <CartBottomWrapper />
-              </div>
-            </Providers>
-
-            <Toaster
-              position="top-center"
-              containerStyle={{ top: "30%" }}
-              toastOptions={{
-                style: {
-                  borderRadius: "10px",
-                  padding: "12px 16px",
-                },
-                className: "toast-default",
-                success: { className: "toast-success" },
-                error: { className: "toast-error" },
-                loading: { className: "toast-loading" },
-              }}
-              reverseOrder={false}
-            />
-          </div>
-        </div>
-   
-  );
 }
