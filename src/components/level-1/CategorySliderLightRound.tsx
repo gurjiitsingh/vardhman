@@ -95,7 +95,7 @@ export default function CategorySliderLightRound() {
   };
 
   return (
-    <div id="order_now" className="scroll-mt-24 relative max-w-[1700px] mx-auto  px-14 sm:px-6 lg:px-12 mb-7 mt-19">
+    <div id="order_now" className="scroll-mt-24 relative max-w-[1700px] mx-auto  px-14 sm:px-6 lg:px-12 mb-7 mt-20">
       {/* Arrows */}
       <button
         onClick={() => scroll("left")}

@@ -25,10 +25,10 @@ export default function Page() {
       {/* Sections */}
       <CategorySliderLightRound />
       <HeroSlider />
-        <FashionCategories />
+      <FashionCategories />
       <FeaturesSection />
 
-    
+
       <LuxuryDivider />
       <CategorySliderLight />
       <Suspense fallback={<div>Loading...</div>}>
