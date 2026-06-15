@@ -141,6 +141,8 @@ export type OutletType = {
   upiName?: string;
   upiTitle?: string;
 
+
+  posType: "RESTAU" | "RETAIL" | "FAST_FOOD" 
   // STATUS
   isActive: boolean;
 
@@ -148,3 +150,13 @@ export type OutletType = {
   createdAt?: any;
   updatedAt?: any;
 };
+
+
+
+export const POS_TYPES = {
+  RESTAU: "RESTAU",
+  RETAIL: "RETAIL",
+  FAST_FOOD: "FAST_FOOD",
+} as const;
+
+export type PosType = typeof POS_TYPES[keyof typeof POS_TYPES];

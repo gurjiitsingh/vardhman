@@ -8,6 +8,10 @@ import { newProductSchema, TnewProductSchema } from "@/lib/types/productType";
 import { categoryType } from "@/lib/types/categoryType";
 import { resizeImage } from "@/utils/resizeImage";
 import { addNewProduct } from "@/app/(universal)/action/products/dbOperation";
+import { getMasterCategories } from "@/app/(universal)/action/master-category/getMasterCategories";
+import Link from "next/link";
+const masterCategories =
+  await getMasterCategories();
 
 const Page = () => {
   const [categoryData, setCategoryData] = useState<categoryType[]>([]);
@@ -54,7 +58,7 @@ const Page = () => {
     defaultValues: {
       publishStatus: "published",
       discountPrice: 0,
-      stockQty: 0,
+      currentStock: 0,
       //  sortOrder: 0,
       //  taxRate: 0, //  default tax 0%
     },
@@ -86,9 +90,10 @@ const Page = () => {
     formData.append("hasVariants", "false");
     formData.append("type", "parent");
     formData.append("discountPrice", String(data.discountPrice ?? 0));
-    formData.append("stockQty", String(data.stockQty ?? -1));
+    formData.append("currentStock", String(data.currentStock ?? -1));
     formData.append("sortOrder", String(data.sortOrder ?? 0));
     formData.append("categoryId", data.categoryId || "");
+    formData.append("masterCategoryId", data.masterCategoryId || "");
     formData.append("productDesc", data.productDesc || "");
     formData.append("status", data.publishStatus || "published");
     formData.append("isFeatured", data.isFeatured ? "true" : "false");
@@ -118,7 +123,7 @@ const Page = () => {
         name: "",
         //  price: 0,
         // discountPrice: 0,
-        stockQty: 0,
+        currentStock: 0,
         sortOrder: Number(data.sortOrder) + 1 || 1,
         //  categoryId: "",
         productDesc: "",
@@ -132,7 +137,36 @@ const Page = () => {
     }
   }
 
-  return (
+  return (<>
+    {/* Filters */}
+    <div className="mb-5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-white rounded-2xl p-4 shadow-sm">
+
+        {/* Left Side */}
+        <div className="flex flex-col sm:flex-row gap-3">
+
+
+        </div>
+
+        {/* Right Side */}
+        <Link href="/admin/products">
+          <Button
+            className="
+          h-10
+          rounded-xl
+          bg-slate-400
+          hover:bg-[#00796b]
+          text-white
+          shadow-none
+        "
+          >
+            All Products
+          </Button>
+        </Link>
+
+      </div>
+    </div>
+
     <form
       onSubmit={handleSubmit(onSubmit, (errors) => {
         console.log("FORM ERRORS ❌", errors);
@@ -164,27 +198,49 @@ const Page = () => {
 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              
+
+
+              <div className="flex flex-col gap-1">
+                <label className="label-style">
+                  Master Category
+                </label>
+
+                <select
+                  {...register("masterCategoryId")}
+                  className="input-style"
+                >
+                  <option value="">
+                    Select Master Category
+                  </option>
+
+                  {masterCategories.map((item) => (
+                    <option
+                      key={item.id}
+                      value={item.id}
+                    >
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="label-style">Category</label>
+                <select {...register("categoryId")} className="input-style py-1">
+                  <option value="">Select Category</option>
+                  {categoryData.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-destructive">
+                  {errors.categoryId?.message}
+                </p>
+              </div>
 
 
 
-                <div className="flex flex-col gap-1">
-                  <label className="label-style">Category</label>
-                  <select {...register("categoryId")} className="input-style py-1">
-                    <option value="">Select Category</option>
-                    {categoryData.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-xs text-destructive">
-                    {errors.categoryId?.message}
-                  </p>
-                </div>
-
-
-             
 
               <div className="flex flex-col gap-1">
                 <label className="label-style">Search Code / SKU</label>
@@ -264,7 +320,7 @@ const Page = () => {
             <div>
               <label className="label-style">Stock Quantity</label>
               <input
-                {...register("stockQty")}
+                {...register("currentStock")}
                 onFocus={(e) => {
                   if (e.target.value === "0") e.target.value = "";
                 }}
@@ -272,7 +328,7 @@ const Page = () => {
                 placeholder="Enter stock quantity"
               />
               <p className="text-xs text-destructive">
-                {errors.stockQty?.message}
+                {errors.currentStock?.message}
               </p>
             </div>
           </div>
@@ -434,6 +490,7 @@ const Page = () => {
         </div>
       </div>
     </form>
+  </>
   );
 };
 

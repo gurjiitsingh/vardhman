@@ -4,7 +4,7 @@
 import { upload, uploadOutletLogo } from "@/lib/cloudinary";
 import { countryConfig } from "@/lib/config/countryConfig";
 import { adminDb } from "@/lib/firebaseAdmin";
-import { outletSchema } from "@/lib/types/outletType";
+import { outletSchema, POS_TYPES, PosType } from "@/lib/types/outletType";
 import { FieldValue } from "firebase-admin/firestore";
 import { cache } from "react";
 
@@ -321,6 +321,8 @@ export const getOutlet = cache(async () => {
     upiName: data.upiName ?? "",
     upiTitle: data.upiTitle ?? "Scan to Pay",
 
+    posType: data.posType ?? "RESTAU_POS", 
+    
     // =================================================
     // STATUS
     // =================================================
@@ -436,3 +438,61 @@ export const getOutlet = cache(async () => {
       };
     }
   }
+
+
+
+
+
+
+
+export async function updatePosType(formData: FormData): Promise<void> {
+  const outletId = formData.get("outletId") as string;
+  const posType = formData.get("posType") as string;
+
+  if (!outletId || !posType) {
+    throw new Error("Missing data");
+  }
+
+  await adminDb.collection("outlets").doc(outletId).update({
+    posType,
+    updatedAt: FieldValue.serverTimestamp(),
+  });
+}
+
+
+export async function updateOutletPosType(
+  outletId: string,
+  posType: PosType
+) {
+ 
+  if (!Object.values(POS_TYPES).includes(posType)) {
+    return {
+      errors: { posType: "Invalid POS type" },
+    };
+  }
+
+  if (!outletId) {
+    return {
+      errors: { outletId: "Outlet ID required" },
+    };
+  }
+
+  try {
+    await adminDb
+      .collection("outlets")
+      .doc(outletId)
+      .update({
+        posType,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+
+    return { success: true };
+
+  } catch (error) {
+    console.error("POS type update failed:", error);
+
+    return {
+      errors: { general: "Failed to update POS type" },
+    };
+  }
+}
