@@ -55,7 +55,7 @@ function TableRows({
     );
 
   const isLowStock =
-    item.currentStock!! <= item.minStock!!;
+    item.currentStock! <= item.minStock!!;
 
   async function handleDelete() {
     const confirmDelete = confirm(
@@ -144,7 +144,7 @@ function TableRows({
             { item.currentStock}
             
             {/* {displayStock(
-              item.currentStock,
+              item.currentStock!,
               item.purchaseUnit,
               item.consumptionUnit,
               item.conversionFactor

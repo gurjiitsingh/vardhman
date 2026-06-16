@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { UseSiteContext } from "@/SiteContext/SiteContext";
 import { Lato, Poppins } from "next/font/google";
+import Link from "next/link";
 
 //  Category type definition
 export type CategoryType = {
@@ -123,10 +124,10 @@ export default function CategorySliderLightRound() {
             const isActive = displayCategory === category.id;
             return (
               <div key={category.id} className="flex-shrink-0 snap-start">
-                <button
-                  onClick={() => setProductCategoryIdG(category.id)}
-                  className={`group w-[120px] sm:w-[140px] py-2 flex flex-col items-center justify-start gap-4 bg-white rounded-xl  transition-all duration-300 ease-in-out flex flex-col items-center justify-start gap-3`}
-                >
+              <Link
+  href={`/products/category/${category.id}`}
+  className="group w-[120px] sm:w-[140px] py-2 flex flex-col items-center justify-start gap-4 bg-white rounded-xl transition-all duration-300 ease-in-out"
+>
                   <div
                     className={`${isActive
                       ? "relative rounded-full overflow-hidden bg-gray-100 border-2 border-slate-300 shadow-lg"
@@ -148,7 +149,7 @@ export default function CategorySliderLightRound() {
                   >
                     {category.name}
                   </span>
-                </button>
+                </Link>
               </div>
             );
 

@@ -14,6 +14,7 @@ import CategorySliderLightRound from "@/components/level-1/CategorySliderLightRo
 import FeaturesSection from "@/custom/cus-components/FeaturesSection";
 import FashionCategories from "@/custom/cus-components/FashionCategories";
 import LuxuryDivider from "@/custom/cus-components/LuxuryDivider";
+import FashionCategoriesWrapper from "@/custom/cus-components/FashionCategoriesWrapper";
 
 export default function Page() {
   return (
@@ -25,7 +26,7 @@ export default function Page() {
       {/* Sections */}
       <CategorySliderLightRound />
       <HeroSlider />
-      <FashionCategories />
+      <FashionCategoriesWrapper />
       <FeaturesSection />
 
 
