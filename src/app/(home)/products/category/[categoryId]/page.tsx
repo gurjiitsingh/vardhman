@@ -1,9 +1,8 @@
 import { fetchProductByCategoryId } from "@/app/(universal)/action/products/dbOperation";
-import { adminDb } from "@/lib/firebaseAdmin";
-import { notFound } from "next/navigation";
-import ProductGrid from "./ProductGrid";
 import { fetchCategoryById } from "@/app/(universal)/action/category/fetchCategoryById";
 import { getMasterCategories } from "@/app/(universal)/action/master-category/getMasterCategories";
+import { adminDb } from "@/lib/firebaseAdmin";
+import ProductGrid from "./ProductGrid";
 
 export default async function Page({
   params,
@@ -15,9 +14,12 @@ export default async function Page({
   const { categoryId } = await params;
 
   // Products
-  const products = await fetchProductByCategoryId(categoryId);
-  // Category by id
-  const category = await fetchCategoryById(categoryId)
+  const products =
+    await fetchProductByCategoryId(categoryId);
+
+  // Category
+  const category =
+    await fetchCategoryById(categoryId);
 
   // Master Category
   let masterCategory = null;
@@ -36,19 +38,18 @@ export default async function Page({
     }
   }
 
-  // Categories belonging to same master category
+  // Related Categories
   let relatedCategories: any[] = [];
 
   if (category.masterCategoryId) {
-    const categoriesSnap =
-      await adminDb
-        .collection("category")
-        .where(
-          "masterCategoryId",
-          "==",
-          category.masterCategoryId
-        )
-        .get();
+    const categoriesSnap = await adminDb
+      .collection("category")
+      .where(
+        "masterCategoryId",
+        "==",
+        category.masterCategoryId
+      )
+      .get();
 
     relatedCategories =
       categoriesSnap.docs.map((doc) => ({
@@ -63,66 +64,86 @@ export default async function Page({
     );
   }
 
+  // All Master Categories
+  const allMasterCategories =
+    await getMasterCategories();
 
+  // ----------------------------------
+  // FETCH ALL PRODUCTS FOR VARIANTS
+  // ----------------------------------
 
-if (category.masterCategoryId) {
-  const categoriesSnap =
-    await adminDb
-      .collection("category")
-      .where(
-        "masterCategoryId",
-        "==",
-        category.masterCategoryId
-      )
-      .get();
+  const allProductsSnap = await adminDb
+    .collection("products")
+    .get();
 
-  relatedCategories =
-    categoriesSnap.docs.map((doc) => ({
+  const allProducts =
+    allProductsSnap.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
 
-  relatedCategories.sort(
-    (a, b) =>
-      Number(a.sortOrder || 0) -
-      Number(b.sortOrder || 0)
+  const variants = allProducts.filter(
+    (p: any) => p.type === "variant"
   );
-}
 
-// Fetch all master categories
-const masterCategoriesSnap =
-  await adminDb
-    .collection("masterCategories")
+  // ----------------------------------
+  // ADDONS
+  // ----------------------------------
+
+  const addOnsSnap = await adminDb
+    .collection("addOns")
     .get();
 
-// const allMasterCategories =
-//   masterCategoriesSnap.docs
-//     .map((doc) => ({
-//       id: doc.id,
-//       ...doc.data(),
-//     }))
-//     .sort(
-//       (a: any, b: any) =>
-//         Number(a.sortOrder || 0) -
-//         Number(b.sortOrder || 0)
-//     );
-const allMasterCategories =  await getMasterCategories();
+  const allAddOns =
+    addOnsSnap.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
-  
-  //   // Master Category
-  // const masterCategory = getMasterCategoryById(categoryId);
-  // // Categories belonging to same master category
-  // const relatedCategories = fetchCategoriesByMasterCategory(categoryId);
+  // ----------------------------------
+  // MODIFIER GROUPS
+  // ----------------------------------
 
-return (
-  <ProductGrid
-    products={products}
-    category={category}
-    masterCategory={masterCategory}
-    categories={relatedCategories}
-    allMasterCategories={
-      allMasterCategories
-    }
-  />
-);
+  const modifierGroupsSnap =
+    await adminDb
+      .collection("modifierGroups")
+      .get();
+
+  const modifierGroups =
+    modifierGroupsSnap.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+  // ----------------------------------
+  // PRODUCT MODIFIERS
+  // ----------------------------------
+
+  const productModifiersSnap =
+    await adminDb
+      .collection("productModifiers")
+      .get();
+
+  const productModifiers =
+    productModifiersSnap.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+  return (
+    <ProductGrid
+      products={products}
+      category={category}
+      masterCategory={masterCategory}
+      categories={relatedCategories}
+      allMasterCategories={
+        allMasterCategories
+      }
+
+      variants={variants}
+      allAddOns={allAddOns}
+      modifierGroups={modifierGroups}
+      productModifiers={productModifiers}
+    />
+  );
 }
