@@ -25,9 +25,9 @@ type AdjustInventoryStockType = {
 
   supplierId?: string;
  supplierName?: string;
-  transactionType: InventoryTransactionNameType;
+  type: InventoryTransactionNameType;
 
-  stockDirection:
+  direction:
     | "IN"
     | "OUT";
 
@@ -72,8 +72,8 @@ export async function newInventoryItemAndTransaction({
   inventoryItemId,
   supplierId,
     supplierName,
-  transactionType,
-  stockDirection,
+  type,
+  direction,
 
   quantity,
   unitCost,
@@ -158,7 +158,7 @@ export async function newInventoryItemAndTransaction({
     let afterStock =
       previousStock;
 
-    if (stockDirection === "IN") {
+    if (direction === "IN") {
 
       afterStock =
         previousStock + quantity;
@@ -189,9 +189,9 @@ export async function newInventoryItemAndTransaction({
           ) || 0;
 
     const shouldApplyCost =
-      transactionType === "PURCHASE" ||
-      transactionType === "OPENING_STOCK" ||
-      transactionType ===
+      type === "PURCHASE" ||
+      type === "OPENING_STOCK" ||
+      type ===
         "CUSTOMER_RETURN";
 
         const totalAmount = shouldApplyCost
@@ -205,9 +205,9 @@ export async function newInventoryItemAndTransaction({
     // =====================================================
 
     const isPurchase =
-      transactionType ===
+      type ===
         "PURCHASE" &&
-      stockDirection === "IN";
+      direction === "IN";
 
     const paymentStatusSafe =
       paymentStatus || "PAID";
@@ -247,7 +247,7 @@ export async function newInventoryItemAndTransaction({
     // =====================================================
 
     if (
-      transactionType ===
+      type ===
         "PURCHASE" &&
       !supplierId
     ) {
@@ -271,13 +271,13 @@ export async function newInventoryItemAndTransaction({
       oldCostPrice;
 
     if (
-      stockDirection === "IN" &&
+      direction === "IN" &&
       (
-        transactionType ===
+        type ===
           "PURCHASE" ||
-        transactionType ===
+        type ===
           "OPENING_STOCK" ||
-        transactionType ===
+        type ===
           "CUSTOMER_RETURN"
       )
     ) {
@@ -355,9 +355,9 @@ export async function newInventoryItemAndTransaction({
         // TRANSACTION
         // =====================================
 
-        transactionType,
+        type,
 
-        stockDirection,
+        direction,
 
         // =====================================
         // ORIGINAL PURCHASE VALUES
@@ -460,9 +460,9 @@ conversionFactor:
     const isSupplierFlow =
       supplierId &&
       (
-        transactionType ===
+        type ===
           "PURCHASE" ||
-        transactionType ===
+        type ===
           "SUPPLIER_RETURN"
       );
 
@@ -474,7 +474,7 @@ conversionFactor:
         "PURCHASE";
 
       if (
-        transactionType ===
+        type ===
         "SUPPLIER_RETURN"
       ) {
         ledgerType =

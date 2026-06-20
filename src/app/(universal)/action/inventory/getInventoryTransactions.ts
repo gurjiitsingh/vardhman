@@ -15,9 +15,10 @@ export async function getInventoryTransactions({
   console.log("page----------------", page);
 
   try {
-
+//
     const snapshot = await adminDb
-      .collection("inventoryTransactions")
+      //  .collection("inventoryTransactions")
+        .collection("stockLedgerInventory")
       .orderBy("createdAt", "desc")
       .offset((page - 1) * PAGE_SIZE)
       .limit(PAGE_SIZE + 1)
@@ -42,14 +43,14 @@ export async function getInventoryTransactions({
         inventoryItemName:
           data.inventoryItemName || "",
 
-        transactionType:
-          data.transactionType || "",
+        type:
+          data.type || "",
 
         supplierName:
           data.supplierName || "",
 
-        stockDirection:
-          data.stockDirection || "",
+        direction:
+          data.direction || "",
 
         quantity:
           data.quantity || 0,

@@ -23,14 +23,14 @@ type Props = {
 type FormType = {
   inventoryItemId: string;
 
-  transactionType:
+  type:
     | "PURCHASE"
     | "OPENING"
     | "ADJUSTMENT"
     | "WASTAGE"
     | "RETURN";
 
-  stockDirection:
+  direction:
     | "IN"
     | "OUT";
 
@@ -67,15 +67,15 @@ export default function StockAdjustmentForm({
     reset,
   } = useForm<FormType>({
     defaultValues: {
-      transactionType: "PURCHASE",
-      stockDirection: "IN",
+      type: "PURCHASE",
+      direction: "IN",
       quantity: 0,
       note: "",
     },
   });
 
-  const transactionType = watch(
-    "transactionType"
+  const type = watch(
+    "type"
   );
 
   // =====================================================
@@ -84,19 +84,19 @@ export default function StockAdjustmentForm({
 
   React.useEffect(() => {
     if (
-      transactionType === "PURCHASE" ||
-      transactionType === "OPENING" ||
-      transactionType === "RETURN"
+      type === "PURCHASE" ||
+      type === "OPENING" ||
+      type === "RETURN"
     ) {
-      setValue("stockDirection", "IN");
+      setValue("direction", "IN");
     }
 
     if (
-      transactionType === "WASTAGE"
+      type === "WASTAGE"
     ) {
-      setValue("stockDirection", "OUT");
+      setValue("direction", "OUT");
     }
-  }, [transactionType, setValue]);
+  }, [type, setValue]);
 
   // =====================================================
   // FILTER INVENTORY
@@ -142,9 +142,9 @@ export default function StockAdjustmentForm({
       const result = await adjustInventoryStock({
   inventoryItemId: data.inventoryItemId,
 
-  transactionType: data.transactionType,
+  type: data.type,
 
-  stockDirection: data.stockDirection,
+  direction: data.direction,
 
   quantity: Number(data.quantity),
 
@@ -167,10 +167,10 @@ export default function StockAdjustmentForm({
         );
 
         reset({
-          transactionType:
+          type:
             "PURCHASE",
 
-          stockDirection: "IN",
+          direction: "IN",
 
           quantity: 0,
 
@@ -387,7 +387,7 @@ export default function StockAdjustmentForm({
 
               <select
                 {...register(
-                  "transactionType"
+                  "type"
                 )}
                 className="input-style-4"
               >
@@ -420,7 +420,7 @@ export default function StockAdjustmentForm({
 
               <select
                 {...register(
-                  "stockDirection"
+                  "direction"
                 )}
                 className="input-style-4"
               >

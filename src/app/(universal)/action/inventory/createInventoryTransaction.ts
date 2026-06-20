@@ -2,6 +2,7 @@
 
 import { adminDb } from "@/lib/firebaseAdmin";
 import { InventoryTransactionNameType } from "@/lib/types/InventoryTransactionType";
+//import { InventoryTransactionNameType } from "@/lib/types/InventoryTransactionType";
 
 import admin from "firebase-admin";
 

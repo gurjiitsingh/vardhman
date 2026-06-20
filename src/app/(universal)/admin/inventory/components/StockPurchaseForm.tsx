@@ -30,9 +30,9 @@ type FormType = {
   inventoryItemId: string;
   supplierId?: string;
 supplierName?: string;
-  transactionType: InventoryTransactionNameType;
+  type: InventoryTransactionNameType;
 
-  stockDirection: "IN" | "OUT";
+  direction: "IN" | "OUT";
 
   quantity: number;
 
@@ -87,16 +87,16 @@ export default function StockPurchaseForm({
     reset,
   } = useForm<FormType>({
     defaultValues: {
-      transactionType: "PURCHASE",
-      stockDirection: "IN",
+      type: "PURCHASE",
+      direction: "IN",
       quantity: 0,
       transactionUnit: "pcs",
       note: "",
     },
   });
 
-  const transactionType = watch(
-    "transactionType"
+  const type = watch(
+    "type"
   );
 
   const transactionUnit = watch("transactionUnit");
@@ -107,38 +107,38 @@ export default function StockPurchaseForm({
 
   React.useEffect(() => {
     if (
-      transactionType === "PURCHASE" ||
-      transactionType === "OPENING_STOCK" ||
-      transactionType === "CUSTOMER_RETURN"
+      type === "PURCHASE" ||
+      type === "OPENING_STOCK" ||
+      type === "CUSTOMER_RETURN"
     ) {
-      setValue("stockDirection", "IN");
+      setValue("direction", "IN");
     }
 
     if (
-      transactionType === "WASTAGE"
+      type === "WASTAGE"
     ) {
-      setValue("stockDirection", "OUT");
+      setValue("direction", "OUT");
     }
-  }, [transactionType, setValue]);
+  }, [type, setValue]);
 
 
 
   React.useEffect(() => {
-    switch (transactionType) {
+    switch (type) {
       case "PURCHASE":
       case "OPENING_STOCK":
       case "CUSTOMER_RETURN":
-        setValue("stockDirection", "IN");
+        setValue("direction", "IN");
         break;
 
       case "WASTAGE":
       case "SUPPLIER_RETURN":
-        setValue("stockDirection", "OUT");
+        setValue("direction", "OUT");
         break;
 
       // ADJUSTMENT = manual selection
     }
-  }, [transactionType, setValue]);
+  }, [type, setValue]);
 
   // =====================================================
   // FILTER INVENTORY
@@ -177,7 +177,7 @@ export default function StockPurchaseForm({
 // PURCHASE VALIDATIONS
 // =====================================
 
-if (data.transactionType === "PURCHASE") {
+if (data.type === "PURCHASE") {
 
   // supplier required
   if (!data.supplierId) {
@@ -273,9 +273,9 @@ if (data.transactionType === "PURCHASE") {
   supplierName:
     selectedSupplier?.companyName || "",
 
-  transactionType: data.transactionType,
+  type: data.type,
 
-  stockDirection: data.stockDirection,
+  direction: data.direction,
 
   // INTERNAL
   quantity: finalQuantity,
@@ -306,7 +306,7 @@ if (data.transactionType === "PURCHASE") {
         let updatedStock =
           selectedInventory.currentStock;
 
-        if (data.stockDirection === "IN") {
+        if (data.direction === "IN") {
           updatedStock! += finalQuantity;
         } else {
           updatedStock! -= finalQuantity;
@@ -318,8 +318,8 @@ if (data.transactionType === "PURCHASE") {
         });
 
         reset({
-          transactionType: "PURCHASE",
-          stockDirection: "IN",
+          type: "PURCHASE",
+          direction: "IN",
           quantity: 0,
           note: "",
           unitCost:0,
@@ -504,7 +504,7 @@ if (data.transactionType === "PURCHASE") {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-            {transactionType === "PURCHASE" && (
+            {type === "PURCHASE" && (
               <div className="flex flex-col gap-2">
                 <label className="label-style-4">
                   Supplier
@@ -533,7 +533,7 @@ if (data.transactionType === "PURCHASE") {
               </label>
 
               <select
-                {...register("transactionType")}
+                {...register("type")}
                 className="input-style-4"
               >
                 <option value="PURCHASE">
@@ -562,14 +562,14 @@ if (data.transactionType === "PURCHASE") {
               </select>
             </div> */}
 
-            {/* {transactionType === "ADJUSTMENT" && (
+            {/* {type === "ADJUSTMENT" && (
               <div className="flex flex-col gap-2">
                 <label className="label-style-4">
                   Stock Direction
                 </label>
 
                 <select
-                  {...register("stockDirection")}
+                  {...register("direction")}
                   className="input-style-4"
                 >
                   <option value="IN">

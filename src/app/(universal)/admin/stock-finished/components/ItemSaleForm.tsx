@@ -20,10 +20,11 @@ import {
   InventoryItemType,
   InventoryUnit,
 } from "@/lib/types/InventoryItemType";
-import { InventoryTransactionNameType } from "@/lib/types/InventoryTransactionType";
+
 import { PaymentStatus } from "@/lib/types/PaymentStatus";
 import { displayStock } from "@/utils/inventory/displayStock";
 import { ProductType } from "@/lib/types/productType";
+import { InventoryTransactionNameType } from "@/lib/types/InventoryTransactionType";
 
 type PaymentMethod = "CASH" | "UPI" | "CARD";
 
@@ -31,16 +32,16 @@ type FormType = {
   id: string;
   wholeSaleCutomerId?: string;
   wholeSaleCutomerName?: string;
-  transactionType: InventoryTransactionNameType;
+  type: InventoryTransactionNameType;
 
-  stockDirection: "IN" | "OUT";
+  direction: "IN" | "OUT";
 
   quantity: number;
 
   transactionUnit: InventoryUnit;
 
   // ✅ ADD THIS
-  price: number;
+  unitPrice: number;
   paymentStatus: PaymentStatus; // 
   paymentMethod?: PaymentMethod;
   paidAmount?: number;          // 
@@ -108,13 +109,13 @@ export default function ItemPurchaseForm({
     reset,
   } = useForm<FormType>({
    defaultValues: {
-  transactionType: "SALE",
-  stockDirection: "OUT",
+  type: "SALE",
+  direction: "OUT",
 },
   });
 
-  const transactionType = watch(
-    "transactionType"
+  const type = watch(
+    "type"
   );
 
   const transactionUnit = watch("transactionUnit");
@@ -171,7 +172,7 @@ if (!data.wholeSaleCutomerId) {
   return;
 }
 
-if (!data.price || Number(data.price) <= 0) {
+if (!data.unitPrice || Number(data.unitPrice) <= 0) {
   alert("Selling price must be greater than 0");
   return;
 }
@@ -196,7 +197,7 @@ if (data.paymentStatus === "PAID" && !data.paymentMethod) {
       Number(data.quantity);
 
     let finalUnitCost =
-      Number(data.price);
+      Number(data.unitPrice);
 
    
 
@@ -212,11 +213,11 @@ if (data.paymentStatus === "PAID" && !data.paymentMethod) {
         // ✅ ADD THIS
         wholeSaleCutomerName:
         selectedCustomer?.companyName || "",
-        transactionType: "SALE",
-        stockDirection: "OUT",//data.stockDirection,
+        type: "SALE",
+        direction: "OUT",//data.direction,
         // INTERNAL
         quantity: finalQuantity,
-        price: finalUnitCost,
+        unitPrice: finalUnitCost,
         transactionUnit: transactionUnit,
       //   paymentStatus: data.paymentStatus,
         paymentMethod: data.paymentMethod,
@@ -237,11 +238,11 @@ if (data.paymentStatus === "PAID" && !data.paymentMethod) {
         });
 
         reset({
-          transactionType: "PURCHASE",
-          stockDirection: "IN",
+          type: "PURCHASE",
+          direction: "IN",
           quantity: 0,
           note: "",
-          price: 0,
+          unitPrice: 0,
           id: selectedProduct.id,
         });
       } else {
@@ -570,14 +571,23 @@ if (data.paymentStatus === "PAID" && !data.paymentMethod) {
   {...register("transactionUnit")}
   className="input-style-4"
 >
-  <option value="PCS">Piece (pcs)</option>
-  <option value="BOX">Box</option>
-  <option value="KG">Kilogram (kg)</option>
-  <option value="G">Gram (g)</option>
-  <option value="L">Liter (l)</option>
-  <option value="ML">Milliliter (ml)</option>
-  <option value="PACK">Pack</option>
-  <option value="DOZEN">Dozen</option>
+  <option value="pcs">Piece (pcs)</option>
+  <option value="box">Box</option>
+  <option value="pack">Pack</option>
+  <option value="bottle">Bottle</option>
+  <option value="can">Can</option>
+  <option value="jar">Jar</option>
+  <option value="bag">Bag</option>
+  <option value="carton">Carton</option>
+  <option value="tray">Tray</option>
+  <option value="roll">Roll</option>
+  <option value="pair">Pair</option>
+  <option value="dozen">Dozen</option>
+
+  <option value="kg">Kilogram (kg)</option>
+  <option value="gm">Gram (g)</option>
+  <option value="ltr">Liter (L)</option>
+  <option value="ml">Milliliter (ml)</option>
 </select>
   </div>
 
@@ -590,7 +600,7 @@ if (data.paymentStatus === "PAID" && !data.paymentMethod) {
     <input
       type="number"
       step="0.01"
-      {...register("price")}
+      {...register("unitPrice")}
       className="input-style-4"
       placeholder="Enter price"
     />

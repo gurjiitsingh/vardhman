@@ -208,7 +208,7 @@ function TableRows({
 
   <TableCell>
   <select
-    value={item.productMode || "recipe_live"}
+    value={item.productMode || "raw_stock"}
     onChange={async (e) => {
       const newMode = e.target.value;
 
@@ -244,11 +244,11 @@ function TableRows({
       text-gray-700
     "
   >
-    <option value="recipe_live">
+    <option value="raw_stock">
       Raw Stock
     </option>
 
-    <option value="stock_managed">
+    <option value="finished_stock">
       Finished Product
     </option>
 

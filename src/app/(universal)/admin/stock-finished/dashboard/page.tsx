@@ -243,11 +243,11 @@ export default async function InventoryDashboardPage() {
     </div>
   ) : (
     dashboard.recentTransactions.map((trx: any) => {
-      const style = getTransactionStyle(trx.transactionType);
+      const style = getTransactionStyle(trx.type);
 
       const sign =
-        trx.transactionType === "ADJUSTMENT"
-          ? trx.stockDirection === "IN"
+        trx.type === "ADJUSTMENT"
+          ? trx.direction === "IN"
             ? "+"
             : "-"
           : style.sign;
@@ -276,7 +276,7 @@ export default async function InventoryDashboardPage() {
             </div>
 
             <div className="text-xs text-gray-400 mt-1 uppercase">
-              {trx.transactionType}
+              {trx.type}
             </div>
           </div>
         </div>
@@ -315,7 +315,7 @@ export default async function InventoryDashboardPage() {
     case "ADJUSTMENT":
       return {
         color: "text-blue-600",
-        sign: "", // depends on stockDirection
+        sign: "", // depends on direction
       };
 
     case "RETURN":

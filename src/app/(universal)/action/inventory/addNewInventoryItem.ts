@@ -297,9 +297,9 @@ if (currentStock > 0) {
   await newInventoryItemAndTransaction({
     inventoryItemId,
 
-    transactionType: "OPENING_STOCK",
+    type: "OPENING_STOCK",
 
-    stockDirection: "IN",
+    direction: "IN",
 
     // Internal stock (already converted to consumption unit)
     quantity: currentStock,

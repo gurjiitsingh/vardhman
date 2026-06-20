@@ -4,130 +4,173 @@ import admin from "firebase-admin";
 import { adminDb } from "@/lib/firebaseAdmin";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { processInventory_FinishedStockCreated } from "../inventory/processInventory_FinishedStockCreated";
+import { applyFinishedMovement } from "./finishedStockLedger/applyFinishedMovement";
+import { applyInventoryMovement } from "../inventory/applyInventoryMovement";
+import { InventoryUnit } from "@/lib/types/InventoryItemType";
 
 type AdjustStockType = {
   id: string;
-  stockDirection: "IN" | "OUT";
+  productName: string;
+
+  direction: "IN" | "OUT";
+
   quantity: number;
+  transactionUnit: InventoryUnit;
+
   note?: string;
   createdBy?: string;
 };
 
 export async function updateFinishedItemStock({
   id,
-  stockDirection,
+  productName,
+  direction,
+
   quantity,
+  transactionUnit,
+
   note,
   createdBy,
 }: AdjustStockType) {
   try {
-    // ================= VALIDATION =================
     if (!id) {
-      return { success: false, message: "Product ID required" };
+      return {
+        success: false,
+        message: "Product ID required",
+      };
     }
 
     if (!quantity || quantity <= 0) {
-      return { success: false, message: "Invalid quantity" };
+      return {
+        success: false,
+        message: "Invalid quantity",
+      };
     }
 
-    const productRef = adminDb.collection("products").doc(id);
+    // =========================================================
+    // UPDATE FINISHED PRODUCT + LEDGER
+    // =========================================================
 
-    // ================= TRANSACTION (IMPORTANT) =================
-    await adminDb.runTransaction(async (tx) => {
-      const snap = await tx.get(productRef);
-
-      if (!snap.exists) {
-        throw new Error("Product not found");
-      }
-
-      const data = snap.data();
-      const previousStock = Number(data?.currentStock) || 0;
-
-      let newStock = previousStock;
-
-      if (stockDirection === "IN") {
-        newStock = previousStock + quantity;
-      } else {
-        newStock = previousStock - quantity;
-
-        if (newStock < 0 && !data?.allowNegativeStock) {
-          throw new Error("Insufficient stock");
-        }
-      }
-
-      // ✅ UPDATE STOCK
-      tx.update(productRef, {
-        currentStock: newStock,
-         // IMPORTANT:
-  // If finished stock is maintained,
-  // this product becomes stock managed
-  //productMode: "stock_managed",
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-
-      // ================= OPTIONAL: STOCK HISTORY =================
-      const logRef = adminDb.collection("productStockLogs").doc();
-
-      tx.set(logRef, {
+    const movement =
+      await applyFinishedMovement({
         productId: id,
-        stockDirection,
+
+        productName,
+
+        type:
+          direction === "IN"
+            ? "PRODUCTION"
+            : "ADJUSTMENT",
+
+        direction,
+
         quantity,
-        previousStock,
-        newStock,
-        note: note || "",
-        createdBy: createdBy || "",
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        transactionUnit,
+
+        note,
+
+        createdBy:
+          createdBy || "system",
+
+        source: "ADMIN",
       });
-    });
 
-    // ================= REVALIDATE =================
-  // ==================================================
-// RAW MATERIAL CONSUMPTION
-// ONLY WHEN NEW FINISHED STOCK IS CREATED
-// ==================================================
+    // =========================================================
+    // RAW MATERIAL CONSUMPTION
+    // (ONLY WHEN PRODUCING FINISHED GOODS)
+    // =========================================================
 
-if (stockDirection === "IN") {
-  await processInventory_FinishedStockCreated(
-    `production-${Date.now()}`,
-    [
-      {
-        id: id,
-        quantity,
-      },
-    ]
-  );
-}
+    if (direction === "IN") {
+      const productSnap =
+        await adminDb
+          .collection("products")
+          .doc(id)
+          .get();
 
+      if (!productSnap.exists) {
+        throw new Error(
+          "Product not found"
+        );
+      }
 
+      const productData =
+        productSnap.data();
 
+      const recipesSnapshot =
+        await adminDb
+          .collection("productRecipes")
+          .where(
+            "productId",
+            "==",
+            id
+          )
+          .get();
 
+      for (const doc of recipesSnapshot.docs) {
+        const recipe = doc.data();
 
+        await applyInventoryMovement({
+          inventoryItemId:
+            recipe.inventoryItemId,
 
+          type: "CONSUMPTION",
 
-// ================= REVALIDATE =================
+          direction: "OUT",
 
-revalidateTag("products", "max");
+          quantity:
+            (Number(
+              recipe.quantity
+            ) || 0) * quantity,
 
-revalidatePath("/admin/products");
+          note: `Used for production of ${productData?.name}`,
 
-revalidatePath(
-  "/admin/products/dashboard"
-);
+          referenceId:
+            "movement.transactionId",
 
-return {
-  success: true,
-  message: "Stock updated successfully",
-};
+          referenceType:
+            "PRODUCTION",
 
+          createdBy:
+            createdBy || "system",
 
+          source: "ADMIN",
+        });
+      }
+    }
 
+    // =========================================================
+    // CACHE
+    // =========================================================
 
+    revalidateTag(
+      "products",
+      "max"
+    );
+
+    revalidatePath(
+      "/admin/products"
+    );
+
+    revalidatePath(
+      "/admin/products/dashboard"
+    );
+
+    return {
+      success: true,
+      message:
+        "Stock updated successfully",
+    };
   } catch (error: any) {
-    console.error("❌ updateFinishedItemStock:", error);
+    console.error(
+      "❌ updateFinishedItemStock:",
+      error
+    );
 
     return {
       success: false,
-      message: error.message || "Failed to update stock",
+      message:
+        error.message ||
+        "Failed to update stock",
     };
   }
 }

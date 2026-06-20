@@ -25,7 +25,7 @@ type Props = {
 type FormType = {
   inventoryItemId: string;
 
-  transactionType:
+  type:
   | "PURCHASE"
   | "OPENING_STOCK"
   | "ADJUSTMENT"
@@ -33,7 +33,7 @@ type FormType = {
   | "SUPPLIER_RETURN"
   | "CUSTOMER_RETURN";
 
-  stockDirection:
+  direction:
   | "IN"
   | "OUT";
 
@@ -57,6 +57,8 @@ export default function StockAdjustmentForm({
   const [showDropdown, setShowDropdown] =
     useState(false);
 
+ 
+
   const [
     selectedInventory,
     setSelectedInventory,
@@ -73,16 +75,16 @@ export default function StockAdjustmentForm({
     reset,
   } = useForm<FormType>({
     defaultValues: {
-      transactionType: "OPENING_STOCK",
-      stockDirection: "IN",
+      type: "OPENING_STOCK",
+      direction: "IN",
       quantity: 0,
       transactionUnit: "pcs",
       note: "",
     },
   });
 
-  const transactionType = watch(
-    "transactionType"
+  const type = watch(
+    "type"
   );
 
   const transactionUnit = watch("transactionUnit");
@@ -95,38 +97,45 @@ export default function StockAdjustmentForm({
 
   // React.useEffect(() => {
   //   if (
-  //     transactionType === "PURCHASE" ||
-  //     transactionType === "OPENING_STOCK" ||
-  //     transactionType === "CUSTOMER_RETURN"
+  //     type === "PURCHASE" ||
+  //     type === "OPENING_STOCK" ||
+  //     type === "CUSTOMER_RETURN"
   //   ) {
-  //     setValue("stockDirection", "IN");
+  //     setValue("direction", "IN");
   //   }
 
   //   if (
-  //     transactionType === "WASTAGE"
+  //     type === "WASTAGE"
   //   ) {
-  //     setValue("stockDirection", "OUT");
+  //     setValue("direction", "OUT");
   //   }
-  // }, [transactionType, setValue]);
+  // }, [type, setValue]);
 
+   useEffect(() => {
+  if (selectedInventory) {
+    setValue(
+      "transactionUnit",
+      selectedInventory.purchaseUnit
+    );
+  }
+}, [selectedInventory, setValue]);
 
-
-  React.useEffect(() => {
-    switch (transactionType) {
+   useEffect(() => {
+    switch (type) {
       case "PURCHASE":
       case "OPENING_STOCK":
       case "CUSTOMER_RETURN":
-        setValue("stockDirection", "IN");
+        setValue("direction", "IN");
         break;
 
       case "WASTAGE":
       case "SUPPLIER_RETURN":
-        setValue("stockDirection", "OUT");
+        setValue("direction", "OUT");
         break;
 
       // ADJUSTMENT = manual selection
     }
-  }, [transactionType, setValue]);
+  }, [type, setValue]);
 
   // =====================================================
   // FILTER INVENTORY
@@ -199,6 +208,10 @@ export default function StockAdjustmentForm({
     let finalQuantity =
       Number(data.quantity);
 
+      if (!selectedInventory.conversionFactor) {
+  alert("Conversion factor missing");
+  return;
+}
     // convert purchase -> consumption
     if (
       data.transactionUnit ===
@@ -216,8 +229,8 @@ export default function StockAdjustmentForm({
     let unitCost = 0;
 
     // if (
-    //   data.transactionType === "OPENING_STOCK" ||
-    //   data.transactionType === "CUSTOMER_RETURN"
+    //   data.type === "OPENING_STOCK" ||
+    //   data.type === "CUSTOMER_RETURN"
     // ) {
     //   unitCost =
     //     selectedInventory.costPrice || 0;
@@ -241,11 +254,11 @@ export default function StockAdjustmentForm({
           inventoryItemId:
             data.inventoryItemId,
 
-          transactionType:
-            data.transactionType,
+          type:
+            data.type,
 
-          stockDirection:
-            data.stockDirection,
+          direction:
+            data.direction,
 
           // =====================================
           // INTERNAL
@@ -281,7 +294,7 @@ export default function StockAdjustmentForm({
         let updatedStock =
           selectedInventory.currentStock;
 
-        if (data.stockDirection === "IN") {
+        if (data.direction === "IN") {
           updatedStock! += finalQuantity;
         } else {
           updatedStock! -= finalQuantity;
@@ -292,14 +305,14 @@ export default function StockAdjustmentForm({
           currentStock: updatedStock,
         });
 
-        reset({
-          transactionType: "OPENING_STOCK",
-          stockDirection: "IN",
-          quantity: 0,
-          note: "",
-          inventoryItemId:
-            selectedInventory.id,
-        });
+       reset({
+  type: "OPENING_STOCK",
+  direction: "IN",
+  quantity: 0,
+  note: "",
+  inventoryItemId: selectedInventory.id,
+  transactionUnit: selectedInventory.purchaseUnit, // ✅ FIX
+});
       } else {
         alert(result.message);
       }
@@ -390,24 +403,20 @@ export default function StockAdjustmentForm({
                       <button
                         key={item.id}
                         type="button"
-                        onClick={() => {
-                          setSelectedInventory(item);
+                     onClick={() => {
+  setSelectedInventory(item);
 
-                          setValue(
-                            "inventoryItemId",
-                            item.id
-                          );
+  setValue("inventoryItemId", item.id, {
+    shouldValidate: true,
+  });
 
-                          // default transaction unit
-                          setValue(
-                            "transactionUnit",
-                            item.purchaseUnit
-                          );
+  setValue("transactionUnit", item.purchaseUnit, {
+    shouldValidate: true,
+  });
 
-                          setSearch(item.name);
-
-                          setShowDropdown(false);
-                        }}
+  setSearch(item.name);
+  setShowDropdown(false);
+}}
                         className="w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-gray-100 last:border-0"
                       >
                         <div className="font-medium text-gray-800">
@@ -484,7 +493,7 @@ export default function StockAdjustmentForm({
               </label>
 
               <select
-                {...register("transactionType")}
+                {...register("type")}
                 className="input-style-4"
               >
                 {/* <option value="PURCHASE">
@@ -513,14 +522,14 @@ export default function StockAdjustmentForm({
               </select>
             </div>
 
-            {transactionType === "ADJUSTMENT" && (
+            {type === "ADJUSTMENT" && (
               <div className="flex flex-col gap-2">
                 <label className="label-style-4">
                   Stock Direction
                 </label>
 
                 <select
-                  {...register("stockDirection")}
+                  {...register("direction")}
                   className="input-style-4"
                 >
                   <option value="IN">
@@ -565,17 +574,20 @@ export default function StockAdjustmentForm({
                 {...register("transactionUnit")}
                 className="input-style-4"
               >
-                {selectedInventory && (
-                  <option
-                    value={
-                      selectedInventory.purchaseUnit
-                    }
-                  >
-                    {
-                      selectedInventory.purchaseUnit
-                    }
-                  </option>
-                )}
+            {selectedInventory && (
+  <>
+    <option value={selectedInventory.purchaseUnit}>
+      {selectedInventory.purchaseUnit}
+    </option>
+
+    {selectedInventory.consumptionUnit !==
+      selectedInventory.purchaseUnit && (
+      <option value={selectedInventory.consumptionUnit}>
+        {selectedInventory.consumptionUnit}
+      </option>
+    )}
+  </>
+)}
 
                 {selectedInventory &&
                   selectedInventory.consumptionUnit !==

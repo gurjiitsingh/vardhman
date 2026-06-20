@@ -5,6 +5,8 @@ import { adminDb } from "@/lib/firebaseAdmin";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { updateCustomerAccount } from "./inventorySupplier/updateCustomerAccount";
 import { InventoryUnit } from "@/lib/types/InventoryItemType";
+import { applyInventoryMovement } from "../inventory/applyInventoryMovement";
+import { applyFinishedMovement } from "./finishedStockLedger/applyFinishedMovement";
 
 type PaymentMethod = "CASH" | "UPI" | "CARD";
 
@@ -14,13 +16,13 @@ type AdjustSaleStock = {
   wholeSaleCutomerId?: string;
   wholeSaleCutomerName?: string;
 
-  transactionType: "SALE" | "ADJUSTMENT" | "OPENING";
-  stockDirection: "IN" | "OUT";
+  type: "SALE" | "ADJUSTMENT" | "OPENING";
+  direction: "IN" | "OUT";
 
   quantity: number;
   transactionUnit: InventoryUnit;
 
-  price: number;
+  unitPrice: number;
 
   // ✅ ADD THESE
   paymentStatus?: "PAID" | "CREDIT";
@@ -34,14 +36,16 @@ type AdjustSaleStock = {
   referenceType?: "MANUAL" | "SALE";
 };
 
-export async function addItemSale({
+
+
+export async function addItemSale ({
   id,
   wholeSaleCutomerId,
   wholeSaleCutomerName,
-  transactionType,
-  stockDirection,
+  type,
+  direction,
   quantity,
-  price,
+  unitPrice,
   transactionUnit,
   paymentMethod,
   note,
@@ -49,6 +53,8 @@ export async function addItemSale({
   referenceId,
   referenceType = "MANUAL",
 }: AdjustSaleStock) {
+
+  console.log("unitunitPrice main---------------", unitPrice)
   try {
     // =====================================================
     // VALIDATION
@@ -84,7 +90,7 @@ export async function addItemSale({
 
     let newStock = currentStock;
 
-    if (stockDirection === "OUT") {
+    if (direction === "OUT") {
       newStock = currentStock - quantity;
     } else {
       newStock = currentStock + quantity;
@@ -102,372 +108,91 @@ export async function addItemSale({
     // FIRESTORE TRANSACTION (IMPORTANT)
     // =====================================================
 // =====================================================
-// GET PRODUCT MODE
+// UPDATE FINISHED PRODUCT
 // =====================================================
 
-const productMode =
-  productData?.productMode;
+const totalAmount = quantity * unitPrice;
 
-// =====================================================
-// RECIPE CHECK
-// =====================================================
+const paidAmount = paymentMethod ? totalAmount : 0;
 
-const recipeSnapshot =
-  await adminDb
-    .collection("productRecipes")
-    .where(
-      "productId",
-      "==",
-      id
-    )
-    .get();
+const dueAmount = totalAmount - paidAmount;
 
-// =====================================================
-// STOCK MANAGED PRODUCT
-// Finished goods stock
-// =====================================================
+const paymentStatus =
+    paidAmount >= totalAmount ? "PAID" : "CREDIT";
 
-if (
-  productMode ===
-  "stock_managed"
-) {
+const movement = await applyFinishedMovement({
+  productId: id,
 
-  await adminDb.runTransaction(
-    async (t) => {
+  type,
+  direction,
 
-      const freshSnap =
-        await t.get(productRef);
+  quantity,
 
-      if (!freshSnap.exists) {
-        throw new Error(
-          "Product not found inside transaction"
-        );
-      }
+ transactionUnit,
 
-      const freshData =
-        freshSnap.data();
+  unitPrice,
 
-      const freshStock =
-        Number(
-          freshData?.currentStock
-        ) || 0;
+   totalAmount,
+    paidAmount,
+    dueAmount,
+    paymentStatus,
+    paymentMethod,
 
-      let newStock =
-        freshStock;
+  
 
-      if (
-        stockDirection === "OUT"
-      ) {
-        newStock =
-          freshStock -
-          quantity;
-      } else {
-        newStock =
-          freshStock +
-          quantity;
-      }
+  //wholeSaleCutomerId,
+  //wholeSaleCutomerName,
 
-      if (
-        newStock < 0 &&
-        !freshData?.allowNegativeStock
-      ) {
-        throw new Error(
-          "Insufficient stock"
-        );
-      }
+  referenceId,
+  referenceType,
 
-      // UPDATE PRODUCT STOCK
-      t.update(productRef, {
-        currentStock: newStock,
+  note,
 
-        stockStatus:
-          newStock > 0
-            ? "in_stock"
-            : "out_of_stock",
+  createdBy: createdBy || "admin",
 
-        updatedAt:
-          admin.firestore.FieldValue.serverTimestamp(),
-      });
+  source: "ADMIN",
+});
 
-      // LOG
-      const transactionRef =
-        adminDb
-          .collection(
-            "finishedStockTransactions"
-          )
-          .doc();
 
-      t.set(transactionRef, {
-        productId: id,
+const recipeSnapshot = await adminDb
+  .collection("productRecipes")
+  .where("productId", "==", id)
+  .get();
 
-        transactionType,
-        stockDirection,
-
-        quantity,
-        transactionUnit,
-
-        price,
-
-        previousStock:
-          freshStock,
-
-        newStock,
-
-        totalAmount:
-          quantity * price,
-
-        paymentStatus:
-          paymentMethod
-            ? "PAID"
-            : "CREDIT",
-
-        paymentMethod:
-          paymentMethod ||
-          null,
-
-        paidAmount:
-          paymentMethod
-            ? quantity * price
-            : 0,
-
-        dueAmount:
-          paymentMethod
-            ? 0
-            : quantity * price,
-
-        customerId:
-          wholeSaleCutomerId ||
-          null,
-
-        customerName:
-          wholeSaleCutomerName ||
-          null,
-
-        referenceType,
-
-        referenceId:
-          referenceId || "",
-
-        note:
-          note ||
-          "Stock update",
-
-        createdBy:
-          createdBy ||
-          "admin",
-
-        createdAt:
-          admin.firestore.FieldValue.serverTimestamp(),
-      });
-    }
-  );
-}
-
-// =====================================================
-// RECIPE LIVE PRODUCT
-// Restaurant logic
-// =====================================================
-
-else if (
-  !recipeSnapshot.empty
-) {
-
+if (!recipeSnapshot.empty) {
   for (const recipeDoc of recipeSnapshot.docs) {
+    const recipe = recipeDoc.data();
 
-    const recipeData =
-      recipeDoc.data();
+    await applyInventoryMovement({
+      inventoryItemId: recipe.inventoryItemId,
 
-    const inventoryItemId =
-      recipeData.inventoryItemId;
+      type: "CONSUMPTION",
+      direction: "OUT",
 
-    const recipeQty =
-      Number(
-        recipeData.quantity
-      ) || 0;
+      quantity:
+        (Number(recipe.quantity) || 0) * quantity,
 
-    const deductQty =
-      recipeQty * quantity;
+      note: `Wholesale sale (${productData?.name})`,
 
-    const inventoryRef =
-      adminDb
-        .collection(
-          "inventoryItems"
-        )
-        .doc(
-          inventoryItemId
-        );
+      referenceId: "movement.transactionId",
+      referenceType: "SALE",
 
-    await adminDb.runTransaction(
-      async (t) => {
+      createdBy: createdBy || "admin",
 
-        const inventorySnap =
-          await t.get(
-            inventoryRef
-          );
-
-        if (
-          !inventorySnap.exists
-        ) {
-          return;
-        }
-
-        const inventoryData =
-          inventorySnap.data();
-
-        const previousStock =
-          Number(
-            inventoryData?.currentStock
-          ) || 0;
-
-        const newStock =
-          stockDirection ===
-          "OUT"
-            ? previousStock -
-              deductQty
-            : previousStock +
-              deductQty;
-
-        if (
-          newStock < 0 &&
-          !productData?.allowNegativeStock
-        ) {
-          throw new Error(
-            "Insufficient inventory stock"
-          );
-        }
-
-        // UPDATE INVENTORY
-        t.update(
-          inventoryRef,
-          {
-            currentStock:
-              newStock,
-
-            updatedAt:
-              admin.firestore.FieldValue.serverTimestamp(),
-          }
-        );
-
-        // INVENTORY LOG
-        const inventoryLogRef =
-          adminDb
-            .collection(
-              "inventoryTransactions"
-            )
-            .doc();
-
-        t.set(
-          inventoryLogRef,
-          {
-            inventoryItemId,
-
-            inventoryItemName:
-              inventoryData?.name ||
-              "",
-
-            type: "sale",
-
-            quantity:
-              deductQty,
-
-            previousStock,
-
-            newStock,
-
-            note: `Wholesale sale (${productData?.name})`,
-
-            referenceId:
-              referenceId ||
-              "",
-
-            referenceType:
-              "sale",
-
-            createdBy:
-              createdBy ||
-              "admin",
-
-            createdAt:
-              admin.firestore.FieldValue.serverTimestamp(),
-          }
-        );
-      }
-    );
+      source: "ADMIN",
+    });
   }
 }
 
-// =====================================================
-// SIMPLE PRODUCT
-// =====================================================
-
-else {
-
-  await adminDb.runTransaction(
-    async (t) => {
-
-      const freshSnap =
-        await t.get(productRef);
-
-      if (!freshSnap.exists) {
-        throw new Error(
-          "Product not found"
-        );
-      }
-
-      const freshData =
-        freshSnap.data();
-
-      const previousStock =
-        Number(
-          freshData?.currentStock
-        ) || 0;
-
-      const newStock =
-        stockDirection ===
-        "OUT"
-          ? previousStock -
-            quantity
-          : previousStock +
-            quantity;
-
-      if (
-        newStock < 0 &&
-        !freshData?.allowNegativeStock
-      ) {
-        throw new Error(
-          "Insufficient stock"
-        );
-      }
-
-      t.update(productRef, {
-        currentStock: newStock,
-
-        stockStatus:
-          newStock > 0
-            ? "in_stock"
-            : "out_of_stock",
-
-        updatedAt:
-          admin.firestore.FieldValue.serverTimestamp(),
-      });
-    }
-  );
-}
- 
-
-    // =====================================================
-    // CUSTOMER ACCOUNT (ONLY FOR SALE)
-    // =====================================================
-
-    if (transactionType === "SALE" && wholeSaleCutomerId) {
-   const totalAmount = quantity * price;
+    if (type === "SALE" && wholeSaleCutomerId) {
+   const totalAmount = quantity * unitPrice;
 
 const paid = paymentMethod ? totalAmount : 0;
 const due = totalAmount - paid;
 
 await updateCustomerAccount({
   wholeSaleCutomerId,
-  transactionType,
+  type,
   totalAmount,
   paidAmount: paid,
   dueAmount: due,

@@ -16,7 +16,7 @@ export type  InventoryTransactionNameType =
   | "RETURN" 
   | "OPENING_STOCK";
 
-export type InventoryTransactionType = {
+export type Inventorytype = {
   id: string;
 
   inventoryItemId: string;
@@ -24,9 +24,9 @@ export type InventoryTransactionType = {
 
   inventoryItemName: string;
 
-  transactionType: InventoryTransactionNameType;
+  type: InventoryTransactionNameType;
 
-  stockDirection:
+  direction:
     | "IN"
     | "OUT";
 
@@ -69,7 +69,7 @@ export type InventoryTransactionType = {
 };
 
 
-// export type InventoryTransactionType = {
+// export type Inventorytype = {
 //   id: string;
 
 //   inventoryItemId: string;

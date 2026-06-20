@@ -19,7 +19,6 @@ export type cartProductType = {
   basePrice?: number;
  
   quantity: number;
- 
   currentStock: number | null;
 
   categoryId: string;
