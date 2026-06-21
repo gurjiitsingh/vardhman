@@ -4,6 +4,7 @@ import { getMasterCategories } from "@/app/(universal)/action/master-category/ge
 import { adminDb } from "@/lib/firebaseAdmin";
 import ProductGrid from "./ProductGrid";
 import { addOnType } from "@/lib/types/addOnType";
+import { ProductType } from "@/lib/types/productType";
 
 export default async function Page({
   params,
@@ -77,14 +78,18 @@ export default async function Page({
     .collection("products")
     .get();
 
-  const allProducts =
-    allProductsSnap.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+const allProducts: ProductType[] =
+  allProductsSnap.docs.map(
+    (doc) =>
+      ({
+        id: doc.id,
+        ...doc.data(),
+      } as ProductType)
+  );
 
-  const variants = allProducts.filter(
-    (p: any) => p.type === "variant"
+const variants: ProductType[] =
+  allProducts.filter(
+    (p) => p.type === "variant"
   );
 
   // ----------------------------------
