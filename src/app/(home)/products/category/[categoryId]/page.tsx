@@ -3,6 +3,7 @@ import { fetchCategoryById } from "@/app/(universal)/action/category/fetchCatego
 import { getMasterCategories } from "@/app/(universal)/action/master-category/getMasterCategories";
 import { adminDb } from "@/lib/firebaseAdmin";
 import ProductGrid from "./ProductGrid";
+import { addOnType } from "@/lib/types/addOnType";
 
 export default async function Page({
   params,
@@ -94,11 +95,11 @@ export default async function Page({
     .collection("addOns")
     .get();
 
-  const allAddOns =
-    addOnsSnap.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+  const allAddOns: addOnType[] =
+  addOnsSnap.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<addOnType, "id">),
+  }));
 
   // ----------------------------------
   // MODIFIER GROUPS
