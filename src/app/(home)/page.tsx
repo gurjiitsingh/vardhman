@@ -22,10 +22,6 @@ export default function Page() {
   return (
     <main className="pt-[80px] text-gray-900 font-sans">
 
-      {/* ✅ Client-only animation init */}
-      {/* <AOSInit /> */}
-
-      {/* Sections */}
       <CategorySliderLightRound />
       <HeroSlider />
       <FashionCategoriesWrapper />
@@ -34,7 +30,7 @@ export default function Page() {
 
 
     
-      {/* <CategorySliderLight /> */}
+  
       <Suspense fallback={<div>Loading...</div>}>
         <ProductsWrapper />
       </Suspense>
@@ -44,7 +40,7 @@ export default function Page() {
 
 
 
-      {/* ✅ Server async component with streaming */}
+     
       <Suspense fallback={<div className="h-40" />}>
         <ContactInfoWrapper />
       </Suspense>

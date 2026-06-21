@@ -24,7 +24,7 @@ export default function RootLayout({
         />
       </head>
 
-      <body className={`${lato.className} bg-white text-[#2b2b2b]`} suppressHydrationWarning>
+      <body    className={`${lato.className} bg-white text-[#2b2b2b] overflow-x-hidden`}  suppressHydrationWarning>
       {children}</body>
     </html>
   );
