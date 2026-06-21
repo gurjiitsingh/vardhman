@@ -17,7 +17,9 @@ export default function ContactInfo({ outlet, schedule }: any) {
     "w-16 h-16 rounded-full bg-gradient-to-br from-pink-50 to-rose-100 text-pink-600 flex items-center justify-center text-2xl mb-5 mx-auto shadow-sm group-hover:scale-110 transition-all duration-300";
 
   return (
-    <section className="relative overflow-hidden py-20 md:py-28">
+    <section
+    data-aos="flip-up"
+    className="relative overflow-hidden py-20 md:py-28">
       {/* Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom_right,#ffffff,#faf9f7,#f5f5f4,#ffffff)]" />
 
