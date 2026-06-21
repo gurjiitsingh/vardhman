@@ -1,6 +1,8 @@
 "use client";
 
+
 import Image from "next/image";
+import { useEffect } from "react";
 import {
   FaTshirt,
   FaShippingFast,
@@ -28,6 +30,7 @@ export default function FeaturesSection() {
     },
   ];
 
+   
   return (
     <section className="relative overflow-hidden py-16 bg-gradient-to-br from-pink-50 via-white to-rose-50">
 
@@ -38,6 +41,8 @@ export default function FeaturesSection() {
         width={180}
         height={180}
         className="absolute right-0 bottom-0 opacity-15 hidden lg:block"
+
+        
       />
 
       {/* Glow */}
@@ -49,7 +54,10 @@ export default function FeaturesSection() {
 
           {features.map((item, index) => (
             <div
-              key={index}
+            
+                key={index}
+    data-aos="fade-up"
+    data-aos-delay={index * 120}
               className="
                 group
                 bg-white/80

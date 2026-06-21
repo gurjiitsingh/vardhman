@@ -18,17 +18,26 @@ export default function FashionCategories({
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         {/* Heading */}
         <div className="text-center mb-14">
-          <p className="uppercase tracking-[5px] text-sm text-neutral-500 mb-4">
+          <p  data-aos="fade-left"
+            data-aos-easing="linear"
+            data-aos-duration="500" 
+            className="uppercase tracking-[5px] text-sm text-neutral-500 mb-4">
             Shop by Category
           </p>
 
-          <h2 className="text-4xl md:text-6xl font-light text-neutral-900">
+          <h2 
+           data-aos="fade-right"
+            data-aos-easing="linear"
+            data-aos-duration="500"
+             className="text-4xl md:text-6xl font-light text-neutral-900">
             Explore Collections
           </h2>
         </div>
 
         {/* Categories */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        <div
+        data-aos="zoom-in-down"
+        className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           {masterCategories.map((category) => (
             <Link
               key={category.id}

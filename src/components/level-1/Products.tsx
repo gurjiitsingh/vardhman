@@ -5,6 +5,7 @@ import { UseSiteContext } from "@/SiteContext/SiteContext";
 import dynamic from "next/dynamic";
 import { ProductType } from "@/lib/types/productType";
 import { addOnType } from "@/lib/types/addOnType";
+import Link from "next/link";
 //import ProdcutCardHorizontical19 from "../custom/cus-componets/ProductCard-h19"
 
 // export type ProductType = {
@@ -216,22 +217,143 @@ const mappingData = await mappingRes.json();
         "flex flex-col justify-between md:flex-row md:flex-wrap gap-3 md:gap-5";
   }
 
-  return (
-    <div className="max-w-8xl mx-auto my-6">
-      <div className="px-4 sm:px-6 lg:px-12">
-        <div className={containerClass}>
-          {products.map((product, i) => (
-            <Card
-              key={product.id ?? `${product.name}-${i}`}
-             product={product}
-  variants={variant}
-  allAddOns={addOns}
-  modifierGroups={modifierGroups}
-  productModifiers={productModifiers}
-            />
-          ))}
+ return (
+  <section className="relative py-16 md:py-24 bg-white overflow-hidden">
+    {/* Background Glow */}
+    <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-rose-100/70 blur-[140px] rounded-full" />
+
+    <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-pink-100/60 blur-[140px] rounded-full" />
+
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+      {/* Heading */}
+      <div className="text-center max-w-3xl mx-auto mb-14">
+        <p 
+         data-aos="fade-left"
+         data-aos-duration="2000"
+        className="uppercase tracking-[5px] text-sm text-neutral-500 mb-4">
+          Latest Collection
+        </p>
+
+        <h2 
+            data-aos="fade-right"
+        
+        className="text-4xl md:text-6xl font-light text-neutral-900">
+          New Arrivals
+        </h2>
+
+        <p
+           data-aos="zoom-in-left"
+        className="mt-6 text-neutral-500 leading-8 text-base md:text-lg">
+          Refresh your wardrobe with our latest arrivals. Carefully curated
+          pieces crafted with premium fabrics, timeless silhouettes, and modern
+          details for effortless everyday style.
+        </p>
+
+        {/* Highlights */}
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-8 md:gap-12">
+          <div className="text-center">
+            <p className="text-3xl md:text-4xl font-light text-neutral-900">
+              {products.length}+
+            </p>
+
+            <p 
+            data-aos="fade-left"
+            className="mt-2 uppercase tracking-[3px] text-xs text-neutral-500">
+              New Arrivals
+            </p>
+          </div>
+
+          <div className="hidden md:block h-12 w-px bg-neutral-200" />
+
+          <div className="text-center">
+            <p className="text-3xl md:text-4xl font-light text-neutral-900">
+              Premium
+            </p>
+
+            <p className="mt-2 uppercase tracking-[3px] text-xs text-neutral-500">
+              Quality
+            </p>
+          </div>
+
+          <div className="hidden md:block h-12 w-px bg-neutral-200" />
+
+          <div className="text-center">
+            <p className="text-3xl md:text-4xl font-light text-neutral-900">
+              Trend
+            </p>
+
+            <p className="mt-2 uppercase tracking-[3px] text-xs text-neutral-500">
+              Inspired
+            </p>
+          </div>
+
+          <div className="hidden md:block h-12 w-px bg-neutral-200" />
+
+          <div className="text-center">
+            <p className="text-3xl md:text-4xl font-light text-neutral-900">
+              Everyday
+            </p>
+
+            <p className="mt-2 uppercase tracking-[3px] text-xs text-neutral-500">
+              Comfort
+            </p>
+          </div>
         </div>
       </div>
+
+      {/* Products */}
+      <div className={containerClass}>
+        {products.map((product, i) => (
+          <Card
+            key={product.id ?? `${product.name}-${i}`}
+            product={product}
+            variants={variant}
+            allAddOns={addOns}
+            modifierGroups={modifierGroups}
+            productModifiers={productModifiers}
+          />
+        ))}
+      </div>
+
+      {/* Bottom CTA */}
+      <div className="mt-16 text-center">
+        <p 
+        data-aos="fade-left"
+            data-aos-easing="linear"
+            data-aos-duration="500"
+        className="uppercase tracking-[4px] text-sm text-neutral-500 mb-5">
+          Discover More Styles
+        </p>
+
+       <Link
+  href="/category"
+  data-aos="fade-right"
+            data-aos-easing="linear"
+            data-aos-duration="500"
+  className="
+    inline-flex
+    items-center
+    justify-center
+    rounded-full
+    border
+    border-neutral-900
+    px-8
+    py-3
+    uppercase
+    tracking-[2px]
+    text-sm
+    font-medium
+    text-neutral-900
+    transition-all
+    duration-300
+    hover:bg-neutral-900
+    hover:text-white
+  "
+>
+  View All Collection
+</Link>
+      </div>
     </div>
-  );
+  </section>
+);
 }

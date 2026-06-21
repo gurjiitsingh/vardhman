@@ -185,7 +185,8 @@ export default function ProdcutCardHorizontical({
             {/* Cart Button */}
             <div className="bg-[#F3FDE8] rounded-full ">
               {!isCartDisabled ? (
-                <CartButton cartProduct={cartProduct} />
+                // <CartButton cartProduct={cartProduct} />
+                <></>
               ) : (
                 <div className="relative group">
                   <button

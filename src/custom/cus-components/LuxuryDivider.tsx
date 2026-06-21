@@ -1,6 +1,8 @@
 "use client";
 
 export default function LuxuryDivider() {
+
+  
   return (
     <section className="relative h-[60px] overflow-hidden">
       {/* Pink Glow */}
@@ -12,7 +14,11 @@ export default function LuxuryDivider() {
       </div>
 
       {/* Center Text */}
-      <div className="relative h-full flex items-center justify-center">
+      <div
+       data-aos="fade-down"
+            data-aos-easing="linear"
+            data-aos-duration="500"
+      className="relative h-full flex items-center justify-center">
         <span
           className="
             px-6

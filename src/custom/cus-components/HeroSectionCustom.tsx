@@ -35,13 +35,18 @@ export default function HeroSectionFashion() {
 
           {/* Tag */}
           <div className="flex items-center justify-center lg:justify-start gap-2 mb-5 text-neutral-500 text-xs sm:text-sm tracking-[3px] uppercase">
-            <FaStar className="text-lime-600 text-[10px] sm:text-xs" />
+            <FaStar  data-aos="fade-right"
+            data-aos-easing="linear"
+            data-aos-duration="500" className="text-lime-600 text-[10px] sm:text-xs" />
             {/* New Fashion Collection */}
             vardhman traders
           </div>
 
           {/* Heading */}
           <h1
+           data-aos="fade-right"
+            data-aos-easing="linear"
+            data-aos-duration="500"
             className={`${chicle.className} text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-5 text-neutral-900`}
           >
             Wear Your
@@ -60,14 +65,20 @@ export default function HeroSectionFashion() {
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
 
             <Link
-              href="/#order_now"
+             data-aos="fade-right"
+            data-aos-easing="linear"
+            data-aos-duration="500"
+              href="/category"
               className="w-full sm:w-auto text-center bg-black text-white hover:bg-neutral-800 px-8 py-3 rounded-full text-sm font-semibold transition duration-300 shadow-xl"
             >
               Shop Now
             </Link>
 
             <Link
-              href="/#month_new"
+             data-aos="fade-left"
+            data-aos-easing="linear"
+            data-aos-duration="500"
+              href="/category"
               className="w-full sm:w-auto text-center border border-neutral-300 hover:bg-black hover:text-white text-black px-8 py-3 rounded-full text-sm font-semibold transition duration-300"
             >
               Explore Collection

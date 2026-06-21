@@ -80,11 +80,18 @@ export default function TrendingCollection() {
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center gap-3 text-neutral-500 uppercase tracking-[4px] text-xs sm:text-sm mb-4">
-            <FaStar className="text-rose-500 text-xs" />
+            <FaStar
+             data-aos="fade-right"
+            data-aos-easing="linear"
+            data-aos-duration="500"
+            className="text-rose-500 text-xs" />
             Trending Collection
           </div>
 
           <h2
+           data-aos="fade-right"
+            data-aos-easing="linear"
+            data-aos-duration="500"
             className={`${chicle.className} text-neutral-900 text-4xl sm:text-5xl md:text-6xl leading-tight`}
           >
             Fashion
@@ -92,7 +99,12 @@ export default function TrendingCollection() {
             Spotlight
           </h2>
 
-          <p className="text-neutral-600 text-sm sm:text-base mt-5 max-w-xl leading-relaxed">
+          <p 
+          
+           data-aos="fade-left"
+            data-aos-easing="linear"
+            data-aos-duration="500"
+          className="text-neutral-600 text-sm sm:text-base mt-5 max-w-xl leading-relaxed">
             Discover the latest premium styles curated
             for modern streetwear and luxury fashion
             lovers.
@@ -107,6 +119,7 @@ export default function TrendingCollection() {
           {/* Slider */}
           <div
             ref={scrollRef}
+            data-aos="zoom-in-left"
             className="
               flex
               gap-6
@@ -137,7 +150,7 @@ export default function TrendingCollection() {
 
                 >
                   <Link
-                    href={`/product/${product.slug}`}
+                     href={`/category`}
                     className="
                       group
                       relative

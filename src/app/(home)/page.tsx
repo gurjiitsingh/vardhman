@@ -1,6 +1,6 @@
 // app/page.tsx
 
-import { Suspense } from "react";
+import { Suspense  } from "react";
 //import AOSInit from "@/components/AOSInit";
 
 import HeroSectionCustom from "@/custom/cus-components/HeroSectionCustom";
@@ -17,6 +17,8 @@ import LuxuryDivider from "@/custom/cus-components/LuxuryDivider";
 import FashionCategoriesWrapper from "@/custom/cus-components/FashionCategoriesWrapper";
 
 export default function Page() {
+
+   
   return (
     <main className="pt-[80px] text-gray-900 font-sans">
 
@@ -27,11 +29,12 @@ export default function Page() {
       <CategorySliderLightRound />
       <HeroSlider />
       <FashionCategoriesWrapper />
+        <LuxuryDivider />
       <FeaturesSection />
 
 
-      <LuxuryDivider />
-      <CategorySliderLight />
+    
+      {/* <CategorySliderLight /> */}
       <Suspense fallback={<div>Loading...</div>}>
         <ProductsWrapper />
       </Suspense>

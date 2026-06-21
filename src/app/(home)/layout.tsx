@@ -14,7 +14,7 @@ import Header from "@/custom/cus-components/Header";
 
 import { SEO } from "@/config/languages";
 import { getDynamicSEO } from "@/lib/seo/getSeo";
-
+import AosProvider from "@/components/AosProvider";
 
 
 
@@ -82,7 +82,7 @@ export default function RootLayout({
             
 
                 <Header />
-
+   <AosProvider />
                 {children}
 
                 <FooterWrapper />
