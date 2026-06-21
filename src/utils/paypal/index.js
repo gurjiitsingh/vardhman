@@ -1,14 +1,4 @@
-import React from 'react';
-  
-  const Index = () =>  {
-	return (
-	  <div>
-	  </div>
-	);
-  }
-  
-  export default Index;
-  'use server'
+'use server'
 import {
   ApiError,
   CheckoutPaymentIntent,

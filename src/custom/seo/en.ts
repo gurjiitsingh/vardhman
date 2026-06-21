@@ -38,8 +38,8 @@ export const BRANDING = {
 // Order complete
 
   order_complete_heading: "Your order is complete",
-  pickup_time: "Pickup: 20–25 minutes",
-  delivery_time: "Delivery time: 40–55 minutes",
+  pickup_time: "",
+  delivery_time: "",
 
 
   //admin sidebar

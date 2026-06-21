@@ -37,12 +37,12 @@ export const SideCart = () => {
 
   function pickUpHandle() {
     sideBarToggle();
-    
-    if (!customerEmail) {
-      emailFormToggle(true);
-    } else {
-      router.push(`/checkout`);
-    }
+       emailFormToggle(true);
+    // if (!customerEmail) {
+    //   emailFormToggle(true);
+    // } else {
+    //   router.push(`/checkout`);
+    // }
   }
 
   function shopMoreHandle() {

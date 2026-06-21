@@ -6,19 +6,14 @@ import { useCartContext } from "@/store/CartContext";
 import { cartProductType } from "@/lib/types/cartDataType";
 
 const CartButtonAdd = ({ cartProduct }: { cartProduct: cartProductType }) => {
-
-  
   const [quantity, setQuantity] = useState<number>(0);
   //const [ productVariat, setProductVariant ] = useState<string>();
 
   const { addProductToCart, removeCartProduct, cartData } = useCartContext();
 
- function addToCartL() {
-  console.log("BUTTON CLICKED");
-  console.log(cartProduct);
-
-  addProductToCart(cartProduct);
-}
+  function addToCartL() {
+    addProductToCart(cartProduct);
+  }
   function removeFromCartL() {
     removeCartProduct(cartProduct);
   }
