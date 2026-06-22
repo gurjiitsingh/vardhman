@@ -20,7 +20,7 @@ export default function Page() {
 
    
   return (
-    <main className="pt-[80px] text-gray-900 font-sans">
+    <main className="pt-0 text-gray-900 font-sans">
 
       <CategorySliderLightRound />
       <HeroSlider />

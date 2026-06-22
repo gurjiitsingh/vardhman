@@ -16,7 +16,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
    
-        <div translate="no">
+        <div  translate="no">
           <SiteLayout>{children}</SiteLayout>
 
           {/*  Toast Notification System */}
