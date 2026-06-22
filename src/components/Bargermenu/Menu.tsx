@@ -79,14 +79,14 @@ export const BargerMenu = () => {
           />
           <motion.div
             {...framerMenuPanel}
-            className="fixed mx-auto right-5 left-5 rounded-b-3xl top-0 px-6 pt-12 pb-3 z-50 bg-dark"
+            className="fixed mx-auto right-5 left-5 rounded-b-3xl top-0 px-6 pt-12 pb-3 z-50 bg-zinc-300"
             ref={ref}
-            aria-label="Menu"
+            aria-label="Menu" 
           >
             {/* Close Button */}
             <div
               translate="no"
-              className="flex w-full items-center justify-end border-b-2 border-zinc-50"
+              className="flex w-full items-center justify-end border-b-2   pt-30  border-zinc-50"
             >
               <button
                 onClick={() => bargerMenuToggle(false)}
@@ -111,7 +111,7 @@ export const BargerMenu = () => {
                     >
                       <motion.span
                         {...framerText(idx)}
-                        className="text-white bg-red-400 rounded-2xl py-1 px-2"
+                        className="text-white bg-[#ff5886] rounded-2xl py-1 px-2"
                       >
                         {item.name}
                       </motion.span>
