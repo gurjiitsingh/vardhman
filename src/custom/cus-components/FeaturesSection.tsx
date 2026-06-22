@@ -32,7 +32,7 @@ export default function FeaturesSection() {
 
    
   return (
-    <section className="relative overflow-hidden py-16 bg-gradient-to-br from-pink-50 via-white to-rose-50">
+    <section  className="relative overflow-hidden py-16 bg-gradient-to-br from-pink-50 via-white to-rose-50">
 
       {/* Decorative Flower */}
       <Image
@@ -48,7 +48,7 @@ export default function FeaturesSection() {
       {/* Glow */}
       <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-pink-100/60 blur-[120px] rounded-full" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+      <div data-aos="flip-left" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
 
@@ -56,8 +56,7 @@ export default function FeaturesSection() {
             <div
             
                 key={index}
-    data-aos="fade-up"
-    data-aos-delay={index * 120}
+   
               className="
                 group
                 bg-white/80

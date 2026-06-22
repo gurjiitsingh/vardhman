@@ -127,15 +127,15 @@ export default function OrderComplete() {
       <div className="flex flex-col gap-6 items-center">
         <div className="text-2xl font-semibold text-center">
           {BRANDING?.order_complete_heading ||
-            ""}
+            "Ihre Bestellung ist abgeschlossen"}
         </div>
 
         <div className="text-lg text-center text-slate-500">
-          {BRANDING?.pickup_time || ""}
+          {BRANDING?.pickup_time || "Abholen: 20–25 Minuten"}
         </div>
 
         <div className="text-lg text-center text-slate-500">
-          {BRANDING?.delivery_time || ""}
+          {BRANDING?.delivery_time || "Lieferzeit: 40–55 Minuten"}
         </div>
 
         <div>
