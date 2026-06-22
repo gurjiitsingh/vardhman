@@ -22,7 +22,7 @@ export default function Page() {
   return (
     <main className="pt-[80px] text-gray-900 font-sans">
 
-      {/* <CategorySliderLightRound />
+      <CategorySliderLightRound />
       <HeroSlider />
       <FashionCategoriesWrapper />
         <LuxuryDivider />
@@ -43,7 +43,7 @@ export default function Page() {
      
       <Suspense fallback={<div className="h-40" />}>
         <ContactInfoWrapper />
-      </Suspense> */}
+      </Suspense>
 
     </main>
   );

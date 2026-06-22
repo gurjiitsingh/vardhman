@@ -159,7 +159,9 @@ body {
  .modul-img {
   @apply order-2;
 } 
-
+* {
+  outline: 1px solid red;
+}
 .slick-arrow{
   background-color: #aaa !important;
   border-radius: 100%;
