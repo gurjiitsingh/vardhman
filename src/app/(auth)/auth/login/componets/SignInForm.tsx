@@ -54,14 +54,14 @@ const SignIn = () => {
   required
   defaultValue="g@mail.com"
   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-3 shadow-sm 
-  dark:border-zinc-200 dark:border-zinc-200 dark:text-white 
+  dark:border-zinc-200 dark:border-zinc-200 dark:text-slate-400 
   focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
 />
           </div>
 
           <div>
             <div className="flex justify-between items-center">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-zinc-300">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-400 dark:text-zinc-300">
                 Password
               </label>
               <Link

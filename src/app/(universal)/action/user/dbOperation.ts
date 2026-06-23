@@ -36,7 +36,7 @@ export async function addUserDirect(formData: FormData): Promise<string | undefi
       lastName,
       email,
       hashedPassword,
-      role: "user",
+      role: "users",
       isVerified: true,
       isAdmin: false,
       time: new Intl.DateTimeFormat("de", {

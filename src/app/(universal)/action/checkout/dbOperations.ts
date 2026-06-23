@@ -37,7 +37,7 @@ export async function addCustomerAddress(formData: FormData) {
         isVerfied: true,
         isAdmin: false,
       };
-      // await addDoc(collection(db, "user"), newuser);
+     
     } catch (e) {
       console.error("Error adding user: ", e);
     }
@@ -61,7 +61,7 @@ export async function addUser(formData: FormData): Promise<string> {
   const recievedData = Object.fromEntries(formData.entries());
   const result = signUpSchema.safeParse(recievedData);
 
-  const q = query(collection(db, "user"), where("email", "==", recievedData.email));
+  const q = query(collection(db, "users"), where("email", "==", recievedData.email));
   const querySnapshot = await getDocs(q);
   let recordId = null;
   querySnapshot.forEach((doc) => {
