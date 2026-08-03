@@ -4,7 +4,7 @@ import SiteLayout from "@/components/SiteLayout";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "Pizzeria Milano Segle, Carrer del Segle XX, 9, Horta-Guinardó, 08041 Barcelona, Spain",
+  title: "Food App, Carrer del Segle XX, 9, Horta-Guinardó, 08041 Barcelona, Spain",
   description: "Carrer del Segle XX, 9, Horta-Guinardó, 08041 Barcelona, Spain",
   other: {
     google: "notranslate",
@@ -16,7 +16,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
    
-        <div  translate="no">
+        <div translate="no">
           <SiteLayout>{children}</SiteLayout>
 
           {/*  Toast Notification System */}

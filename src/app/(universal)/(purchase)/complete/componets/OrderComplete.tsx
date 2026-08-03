@@ -131,11 +131,11 @@ export default function OrderComplete() {
         </div>
 
         <div className="text-lg text-center text-slate-500">
-          {BRANDING?.pickup_time || " "}
+          {BRANDING?.pickup_time || ""}
         </div>
 
         <div className="text-lg text-center text-slate-500">
-          {BRANDING?.delivery_time || " "}
+          {BRANDING?.delivery_time || ""}
         </div>
 
         <div>

@@ -11,13 +11,15 @@ import { newInventoryItemAndTransaction } from "./newInvetoryItemTransactions";
 export async function addNewInventoryItem(
   formData: FormData
 ) {
-  console.log(
-    "inventory save-------------",
-    formData
-  );
+ 
 
   try {
     // FORM VALUES
+
+const purchaseMappings = JSON.parse(
+  formData.get("purchaseMappings") as string
+);
+
     const name =
       (formData.get("name") as string)?.trim() ||
       "";
@@ -34,18 +36,18 @@ export async function addNewInventoryItem(
         ) as string | null
       )?.trim() || "";
 
-    const purchaseUnit = formData.get(
-      "purchaseUnit"
-    ) as InventoryUnit;
+    // const purchaseUnit = formData.get(
+    //   "purchaseUnit"
+    // ) as InventoryUnit;
 
     const consumptionUnit = formData.get(
       "consumptionUnit"
     ) as InventoryUnit;
 
-    const conversionFactor =
-      Number(
-        formData.get("conversionFactor")
-      ) || 1;
+    // const conversionFactor =
+    //   Number(
+    //     formData.get("conversionFactor")
+    //   ) || 1;
 
     let currentStock =
       Number(
@@ -84,18 +86,18 @@ export async function addNewInventoryItem(
       formData.get("isActive") === "true";
 
     // STORE STOCK IN CONSUMPTION UNIT
-    if (
-      purchaseUnit !== consumptionUnit &&
-      conversionFactor > 0
-    ) {
-      currentStock =
-        currentStock * conversionFactor;
+    // if (
+    //   purchaseUnit !== consumptionUnit &&
+    //   conversionFactor > 0
+    // ) {
+    //   currentStock =
+    //     currentStock * conversionFactor;
 
-         minStock =
-        minStock * conversionFactor;
-    }
+    //      minStock =
+    //     minStock * conversionFactor;
+    // }
 
-console.log("currentStock--------------", currentStock)
+
 
     // VALIDATION OBJECT
  const receivedData = {
@@ -103,10 +105,10 @@ console.log("currentStock--------------", currentStock)
   sku: cleanedSku,
   barcode: cleanedBarcode,
 
-  purchaseUnit,
+  //purchaseUnit,
   consumptionUnit,
-  conversionFactor,
-
+ // conversionFactor,
+purchaseMappings,
   currentStock,
   minStock,
 
@@ -125,24 +127,28 @@ console.log("currentStock--------------", currentStock)
         receivedData
       );
 
-    if (!result.success) {
-      const zodErrors: Record<
-        string,
-        string
-      > = {};
+      if (!result.success) {
+  console.log(result.error.issues);
+}
 
-      result.error.issues.forEach(
-        (issue) => {
-          zodErrors[
-            issue.path[0] as string
-          ] = issue.message;
-        }
-      );
+    // if (!result.success) {
+    //   const zodErrors: Record<
+    //     string,
+    //     string
+    //   > = {};
 
-      return {
-        errors: zodErrors,
-      };
-    }
+    //   result.error.issues.forEach(
+    //     (issue) => {
+    //       zodErrors[
+    //         issue.path[0] as string
+    //       ] = issue.message;
+    //     }
+    //   );
+
+    //   return {
+    //     errors: zodErrors,
+    //   };
+    // }
 
     // NORMALIZED NAME
     const normalizedName =
@@ -220,35 +226,34 @@ console.log("currentStock--------------", currentStock)
 
     // FIRESTORE DATA
     const data = {
-      name,
-      nameLower: normalizedName,
+  name,
+  nameLower: normalizedName,
 
-      sku: cleanedSku,
-      barcode: cleanedBarcode,
+  sku: cleanedSku,
+  barcode: cleanedBarcode,
 
-      purchaseUnit,
-      consumptionUnit,
-      conversionFactor,
+  consumptionUnit,
 
-      currentStock,
-      minStock,
+  purchaseMappings,
 
-      costPrice,
-      sellingPrice,
+  currentStock,
+  minStock,
 
-      categoryId,
-   //   supplierId,
+  costPrice,
+  sellingPrice,
 
-      isActive,
+  categoryId,
 
-      createdAt:
-        admin.firestore.FieldValue.serverTimestamp(),
+  isActive,
 
-      updatedAt:
-        admin.firestore.FieldValue.serverTimestamp(),
-    };
+  createdAt:
+    admin.firestore.FieldValue.serverTimestamp(),
 
- console.log("data--------------------",data)
+  updatedAt:
+    admin.firestore.FieldValue.serverTimestamp(),
+};
+
+ 
 
  // SAVE TO FIRESTORE
 const docRef = await adminDb
@@ -305,10 +310,10 @@ if (currentStock > 0) {
     quantity: currentStock,
 
     // Cost per consumption unit
-    unitCost:
-      conversionFactor > 0
-        ? costPrice / conversionFactor
-        : costPrice,
+    unitCost: 0,
+      // conversionFactor > 0
+      //   ? costPrice / conversionFactor
+      //   : costPrice,
 
     // Original values entered by user
     purchaseQuantity:
@@ -316,13 +321,13 @@ if (currentStock > 0) {
         formData.get("currentStock")
       ) || 0,
 
-    purchaseUnit,
+    //purchaseUnit,
 
     // Cost per purchase unit
     purchaseUnitCost:
       costPrice,
 
-    conversionFactor,
+    //conversionFactor,
 
     paymentStatus: "PAID",
 
