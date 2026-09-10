@@ -14,11 +14,12 @@ import Header from "@/custom/cus-components/Header";
 
 import { SEO } from "@/config/languages";
 import { getDynamicSEO } from "@/lib/seo/getSeo";
-import AosProvider from "@/components/AosProvider";
+
 
 
 
 import FooterWrapper from "@/components/FooterWrapper";
+import AOSProvider from "@/components/AOSProvider";
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -66,48 +67,48 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
- 
-        <div className="text-[#2B2E4A]">
-          <div translate="no">
-            <UTMInitializer />
 
-            <Providers>
-              <BargerMenu />
-              <Modal />
+    <div className="text-[#2B2E4A]">
+      <div translate="no">
+        <UTMInitializer />
 
-              <div className="flex flex-col gap-0 my-0">
-                <div className="z-50">
-                  <SafeSideCart />
-                </div>
-            
+        <Providers>
+          <BargerMenu />
+          <Modal />
 
-                <Header />
-   <AosProvider />
-                {children}
+          <div className="flex flex-col gap-0 mt-26">
+            <div className="z-50">
+              <SafeSideCart />
+            </div>
 
-                <FooterWrapper />
 
-                <CartBottomWrapper />
-              </div>
-            </Providers>
+            <Header />
+            <AOSProvider />
+            {children}
 
-            <Toaster
-              position="top-center"
-              containerStyle={{ top: "30%" }}
-              toastOptions={{
-                style: {
-                  borderRadius: "10px",
-                  padding: "12px 16px",
-                },
-                className: "toast-default",
-                success: { className: "toast-success" },
-                error: { className: "toast-error" },
-                loading: { className: "toast-loading" },
-              }}
-              reverseOrder={false}
-            />
+            <FooterWrapper />
+
+            <CartBottomWrapper />
           </div>
-        </div>
-   
+        </Providers>
+
+        <Toaster
+          position="top-center"
+          containerStyle={{ top: "30%" }}
+          toastOptions={{
+            style: {
+              borderRadius: "10px",
+              padding: "12px 16px",
+            },
+            className: "toast-default",
+            success: { className: "toast-success" },
+            error: { className: "toast-error" },
+            loading: { className: "toast-loading" },
+          }}
+          reverseOrder={false}
+        />
+      </div>
+    </div>
+
   );
 }

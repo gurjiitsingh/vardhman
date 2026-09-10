@@ -87,8 +87,8 @@ console.log("issueStockToDepartment from form--------------------------",input)
       // ==========================================
       // 4. VALIDATE RAW STOCK
       // ==========================================
-
-      validateRawStock(rawUpdates);
+// IMPLIMENTED AT EARLY STAGE
+      //validateRawStock(rawUpdates);
 
       // ==========================================
       // 5. WRITE DEPARTMENT STOCK
@@ -132,10 +132,10 @@ console.log("issueStockToDepartment from form--------------------------",input)
           averageCost:
             item.averageCost,
           costPerUnit:
-            item.costPerUnit,
+            item.costPerUnit!,
           totalCost:
             item.quantity *
-            item.costPerUnit,
+            item.costPerUnit!,
           type: "ISSUE_TO_DEPARTMENT",
           direction: "IN",
           referenceType: "ISSUE_TO_DEPARTMENT",
