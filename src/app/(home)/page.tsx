@@ -31,9 +31,9 @@ export default function Page() {
 
     
   
-      <Suspense fallback={<div>Loading...</div>}>
+      {/* <Suspense fallback={<div>Loading...</div>}>
         <ProductsWrapper />
-      </Suspense>
+      </Suspense> */}
 
       <HeroSectionCustom />
       <BestOfMonth />

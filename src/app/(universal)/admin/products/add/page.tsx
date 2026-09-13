@@ -102,19 +102,31 @@ const Page = () => {
     formData.append("searchCode", data.searchCode || "");
    
 
-         if (data.image?.[0]) {
-            const compressedFile =
-              await imageCompression(data.image[0], {
-               maxWidthOrHeight: 500,
-                 maxSizeMB: 0.2,
-  initialQuality: 0.8,
-  useWebWorker: true,
-              });
-    
-            formData.append("image", compressedFile);
-          } else {
-            formData.append("image", "0");
-          }
+        if (data.image?.[0]) {
+  const image = data.image[0];
+
+  const img = new Image();
+  img.src = URL.createObjectURL(image);
+
+  await new Promise((resolve) => {
+    img.onload = resolve;
+  });
+
+  let fileToUpload = image;
+
+  if (img.width > 720 || img.height > 720) {
+    fileToUpload = await imageCompression(image, {
+      maxWidthOrHeight: 720,
+      maxSizeMB: 0.2,
+      initialQuality: 0.9,
+      useWebWorker: true,
+    });
+  }
+
+  formData.append("image", fileToUpload);
+} else {
+  formData.append("image", "0");
+}
 
 
 
