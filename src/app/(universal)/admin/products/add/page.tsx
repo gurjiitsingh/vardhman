@@ -114,11 +114,11 @@ const Page = () => {
 
   let fileToUpload = image;
 
-  if (img.width > 720 || img.height > 720) {
+  if (img.width > 950 || img.height > 950) {
     fileToUpload = await imageCompression(image, {
-      maxWidthOrHeight: 720,
-      maxSizeMB: 0.2,
-      initialQuality: 0.9,
+      maxWidthOrHeight:950,
+      maxSizeMB: 0.3,
+      initialQuality: 1,
       useWebWorker: true,
     });
   }
