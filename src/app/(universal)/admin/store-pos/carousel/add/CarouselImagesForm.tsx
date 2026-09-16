@@ -167,7 +167,7 @@ export default function CarouselImagesForm({
       await imageCompression(
         file,
         {
-          maxWidthOrHeight: 1200,
+          maxWidthOrHeight: 800,
           maxSizeMB: 0.5,
           initialQuality: 0.85,
           useWebWorker: true,
@@ -183,7 +183,7 @@ export default function CarouselImagesForm({
 
     formData.append(
       "file",
-      compressedFile,
+      file,
       `${imageId}.jpg`
     );
 

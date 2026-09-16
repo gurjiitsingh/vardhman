@@ -1,11 +1,72 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 
+import { fetchCarousels } from "@/app/(universal)/action/carousel/carousel";
+
 import "swiper/css";
 
+type CarouselImage = {
+  id: string;
+  image: string;
+  sortOrder: number;
+  active: boolean;
+};
+
 export default function HeroSlider() {
+  const [images, setImages] = useState<
+    CarouselImage[]
+  >([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCarousels() {
+      try {
+        const carousels =
+          await fetchCarousels();
+
+        if (cancelled) {
+          return;
+        }
+
+        const activeImages = carousels
+          .filter(
+            (carousel) =>
+              carousel.active &&
+              carousel.image
+          )
+          .sort(
+            (a, b) =>
+              (a.sortOrder ?? 0) -
+              (b.sortOrder ?? 0)
+          )
+          .map((carousel) => ({
+            id: carousel.id,
+            image: carousel.image,
+            sortOrder: carousel.sortOrder,
+            active: carousel.active,
+          }));
+
+        setImages(activeImages);
+      } catch (error) {
+        console.error(
+          "❌ Failed to load carousel images:",
+          error
+        );
+      }
+    }
+
+    void loadCarousels();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <section className="w-full">
       <Swiper
@@ -17,30 +78,17 @@ export default function HeroSlider() {
         loop
         className="w-full"
       >
-        <SwiperSlide>
-          <img
-            src="/2.webp"
-            alt="Slide 1"
-            className="w-full h-auto"
-          />
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <img
-            src="/4.webp"
-            alt="Slide 2"
-            className="w-full h-auto"
-          />
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <img
-            src="/3.webp"
-            alt="Slide 3"
-            className="w-full h-auto"
-          />
-        </SwiperSlide>
+        {images.map((carousel) => (
+          <SwiperSlide key={carousel.id}>
+            <img
+              src={carousel.image}
+              alt=""
+              className="w-full h-auto"
+            />
+          </SwiperSlide>
+        ))}
       </Swiper>
     </section>
   );
 }
+ 
