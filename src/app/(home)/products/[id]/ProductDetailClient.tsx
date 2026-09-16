@@ -31,6 +31,10 @@ export default function ProductDetailClient({
     <main className="min-h-screen bg-white mt-25">
       <div className="max-w-6xl mx-auto px-4 py-8">
 
+        {/* =====================================================
+            MAIN PRODUCT SECTION
+        ===================================================== */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
           {/* PRODUCT IMAGE */}
@@ -97,7 +101,56 @@ export default function ProductDetailClient({
 
         </div>
 
+        {/* =====================================================
+            PRODUCT IMAGE GALLERY
+        ===================================================== */}
+
+        {product.images && product.images.length > 0 && (
+          <section className="mt-12">
+
+            <h2 className="text-lg font-semibold text-neutral-900 mb-5">
+              More Images
+            </h2>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+
+              {product.images
+                .sort(
+                  (a, b) =>
+                    (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
+                )
+                .map((image) => (
+                  <div
+                    key={image.id}
+                    className="
+                      relative
+                      aspect-square
+                      overflow-hidden
+                      rounded-2xl
+                      bg-neutral-100
+                    "
+                  >
+                    <Image
+                      src={image.url}
+                      alt={image.name || product.name}
+                      fill
+                      className="
+                        object-cover
+                        transition-transform
+                        duration-300
+                        hover:scale-105
+                      "
+                    />
+                  </div>
+                ))}
+
+            </div>
+
+          </section>
+        )}
+
       </div>
     </main>
   );
 }
+ 

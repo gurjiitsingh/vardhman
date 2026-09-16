@@ -1,7 +1,7 @@
 "use server";
 
 import { adminDb } from "@/lib/firebaseAdmin";
-import { ProductType } from "@/lib/types/productType";
+import { ProductImageType, ProductType } from "@/lib/types/productType";
 
 import { newProductSchema, editProductSchema } from "@/lib/types/productType";
 import { revalidatePath, revalidateTag } from "next/cache";
@@ -728,7 +728,88 @@ export async function addNewProduct_without_revalidate(formData: FormData) {
   }
 }
 
+ 
+
 export async function fetchProductById(
+  id: string
+): Promise<ProductType | null> {
+  try {
+    const docSnap = await adminDb
+      .collection("products")
+      .doc(id)
+      .get();
+
+    if (!docSnap.exists) {
+      console.warn(`No product found with ID: ${id}`);
+      return null;
+    }
+
+    const data = docSnap.data();
+
+    // =========================================================
+    // PRODUCT IMAGES
+    // =========================================================
+
+    const images: ProductImageType[] = Array.isArray(data?.images)
+      ? (data.images as ProductImageType[])
+          .sort(
+            (a, b) =>
+              (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
+          )
+      : [];
+
+    // =========================================================
+    // PRODUCT
+    // =========================================================
+
+    const product: ProductType = {
+      id: docSnap.id,
+      name: data?.name ?? "",
+      price: data?.price ?? 0,
+      currentStock: data?.currentStock ?? 0,
+      discountPrice: data?.discountPrice ?? undefined,
+
+      categoryId: data?.categoryId ?? "",
+      productCat: data?.productCat ?? undefined,
+      masterCategoryId: data?.masterCategoryId ?? "",
+
+      masterCategoryName: data?.masterCategoryName ?? "",
+      baseProductId: data?.baseProductId ?? "",
+
+      productDesc: data?.productDesc ?? "",
+      quantity: 0,
+      sortOrder: data?.sortOrder ?? 0,
+
+      // Main product image
+      image: data?.image ?? "",
+
+      // Product gallery images
+      images,
+
+      isFeatured: data?.isFeatured ?? false,
+      favorite: data?.favorite ?? false,
+
+      purchaseSession: data?.purchaseSession ?? null,
+      flavors: data?.flavors ?? false,
+
+      publishStatus: data?.publishStatus ?? "draft",
+      stockStatus: data?.stockStatus ?? "out_of_stock",
+
+      searchCode: data?.searchCode ?? "",
+
+      // GST / Tax
+      taxRate: data?.taxRate ?? null,
+      taxType: data?.taxType ?? null,
+    };
+
+    return product;
+  } catch (error) {
+    console.error("Failed to fetch product:", error);
+    throw new Error("Error fetching product");
+  }
+}
+
+export async function fetchProductById_old(
   id: string
 ): Promise<ProductType | null> {
   try {
