@@ -58,6 +58,7 @@ type SidebarFlagKey =
   | "SHOW_INVENTORY_TRANSACTIONS"
   | "SHOW_PRODUCT_RECIPES"
   | "SHOW_MAINTENANCE"
+   | "SHOW_PAYROLL"
   |  "SHOW_STORE_POS"; 
 
 type Titem = {
@@ -84,6 +85,7 @@ export const sidebarFlags: Record<SidebarFlagKey, boolean> = {
   SHOW_INVENTORY_RAW: flag(process.env.NEXT_PUBLIC_SHOW_RAW_INVENTORY),
    SHOW_DISTRIBUTION: flag(process.env.NEXT_PUBLIC_SHOW_DISTRIBUTION),
   SHOW_INVENTORY_FINISHED: flag(process.env.NEXT_PUBLIC_SHOW_FINISHED_INVENTORY), 
+  SHOW_PAYROLL: flag(process.env.NEXT_PUBLIC_SHOW_PAYROLL),
   SHOW_VARIANTS: flag(process.env.NEXT_PUBLIC_SHOW_VARIANTS),
   SHOW_COUPON: flag(process.env.NEXT_PUBLIC_SHOW_COUPON),
   SHOW_DELIVERY: flag(process.env.NEXT_PUBLIC_SHOW_DELIVERY),
@@ -154,7 +156,7 @@ const Sidebar = () => {
       icon: <MdOutlineCrisisAlert />,
     },
     { key: "SHOW_CATEGORIES", name: BRANDING.sidebar.categories, link: "/admin/categories", icon: <MdCategory /> },
-    { key: "SHOW_PRODUCTS", name: BRANDING.sidebar.products, link: "/admin/products", icon: <MdInventory /> },
+    // { key: "SHOW_PRODUCTS", name: BRANDING.sidebar.products, link: "/admin/products", icon: <MdInventory /> },
 
    {
   key: "SHOW_STORE_POS",
@@ -179,6 +181,12 @@ const Sidebar = () => {
   name: "Distribution",
   link: "/admin/distribution/load-operator",
   icon: <MdInventory />,
+},
+{
+  key: "SHOW_PAYROLL",
+  name: "Payroll",
+  link: "/admin/payroll",
+  icon: <FaUsers />,
 },
 {
   key: "SHOW_MAINTENANCE",
