@@ -10,6 +10,7 @@ export default function ProductDetailClient({
 }: {
   product: ProductType;
 }) {
+  console.log("product.images---------------",product.images)
   const { settings } = UseSiteContext();
 
   const priceRegular = formatCurrencyNumber(
