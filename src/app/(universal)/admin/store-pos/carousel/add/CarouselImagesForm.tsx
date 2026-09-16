@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-
+ 
 import imageCompression from "browser-image-compression";
 
 import {
@@ -15,21 +15,12 @@ import {
   Save,
   Trash2,
 } from "lucide-react";
-
-import type {
-  ProductImageType,
-} from "@/lib/types/productType";
+import { createCarousel, deleteCarousel, fetchCarousels, updateCarousel, updateCarouselOrder, uploadCarouselImage } from "@/app/(universal)/action/carousel/carousel";
+import toast from "react-hot-toast";
 
 // ============================================================
 // SERVER ACTIONS
 // ============================================================
-
-import {
-  deleteProductImage,
-  fetchProductImages,
-  updateProductImages,
-  uploadProductImage,
-} from "@/app/(universal)/action/products/images/productImages";
 
  
 
@@ -37,12 +28,17 @@ import {
 // TYPES
 // ============================================================
 
-type ProductImagesFormProps = {
-  productId: string;
-  productName: string;
-  onSaved?: (
-    images: ProductImageType[]
-  ) => void;
+export type CarouselType = {
+  id: string;
+  image: string;
+  title: string;
+  description: string;
+  link: string;
+  sortOrder: number;
+  active: boolean;
+};
+
+type CarouselImagesFormProps = {
   maxImages?: number;
 };
 
@@ -54,12 +50,12 @@ function createImageId() {
   return crypto.randomUUID();
 }
 
-function normaliseImages(
-  images: ProductImageType[]
-): ProductImageType[] {
-  return [...images].map(
-    (image, index) => ({
-      ...image,
+function normaliseCarousels(
+  carousels: CarouselType[]
+): CarouselType[] {
+  return [...carousels].map(
+    (carousel, index) => ({
+      ...carousel,
       sortOrder: index + 1,
     })
   );
@@ -69,20 +65,17 @@ function normaliseImages(
 // COMPONENT
 // ============================================================
 
-export default function ProductImagesForm({
-  productId,
-  productName,
-  onSaved,
-  maxImages = 4,
-}: ProductImagesFormProps) {
+export default function CarouselImagesForm({
+  maxImages = 10,
+}: CarouselImagesFormProps) {
   // ==========================================================
-  // IMAGES
+  // CAROUSELS
   // ==========================================================
 
   const [
     images,
     setImages,
-  ] = useState<ProductImageType[]>([]);
+  ] = useState<CarouselType[]>([]);
 
   const [
     loading,
@@ -108,43 +101,37 @@ export default function ProductImagesForm({
     useRef<HTMLInputElement | null>(null);
 
   // ==========================================================
-  // LOAD IMAGES
+  // LOAD CAROUSELS
   // ==========================================================
 
   useEffect(() => {
-    if (!productId) {
-      return;
-    }
-
     let cancelled = false;
 
-    async function loadImages() {
+    async function loadCarousels() {
       try {
         setLoading(true);
 
         const loaded =
-          await fetchProductImages(
-            productId
-          );
+          await fetchCarousels();
 
         if (cancelled) {
           return;
         }
 
         setImages(
-          normaliseImages(
+          normaliseCarousels(
             loaded ?? []
           )
         );
       } catch (error) {
         console.error(
-          "PRODUCT_IMAGES_LOAD_ERROR",
+          "CAROUSEL_LOAD_ERROR",
           error
         );
 
         if (!cancelled) {
           alert(
-            "Failed to load product images."
+            "Failed to load carousel images."
           );
         }
       } finally {
@@ -154,12 +141,12 @@ export default function ProductImagesForm({
       }
     }
 
-    void loadImages();
+    void loadCarousels();
 
     return () => {
       cancelled = true;
     };
-  }, [productId]);
+  }, []);
 
   // ==========================================================
   // UPLOAD ONE IMAGE
@@ -176,23 +163,13 @@ export default function ProductImagesForm({
     // COMPRESS / RESIZE
     // ========================================================
 
-    /*
-     * Maximum width OR height = 500px.
-     *
-     * Aspect ratio is preserved.
-     *
-     * Example:
-     * 1200 x 800  -> 500 x 333
-     * 800 x 1200  -> 333 x 500
-     * 1000 x 1000 -> 500 x 500
-     */
     const compressedFile =
       await imageCompression(
         file,
         {
-          maxWidthOrHeight: 500,
-          maxSizeMB: 0.2,
-          initialQuality: 0.8,
+          maxWidthOrHeight: 1200,
+          maxSizeMB: 0.5,
+          initialQuality: 0.85,
           useWebWorker: true,
         }
       );
@@ -211,23 +188,58 @@ export default function ProductImagesForm({
     );
 
     // ========================================================
-    // UPLOAD TO FIREBASE STORAGE
+    // UPLOAD TO CLOUDINARY
     // ========================================================
 
     const result =
-      await uploadProductImage(
-        productId,
-        imageId,
+      await uploadCarouselImage(
         formData
       );
 
+ 
+if (!result.success) {
+  throw new Error(
+    result.error ||
+      "Image upload failed."
+  );
+}
+
+if (!result.url) {
+  throw new Error(
+    "Image upload did not return a URL."
+  );
+}
+
+const newCarousel: CarouselType = {
+  id: imageId,
+  image: result.url,
+  title: `Slide ${imageNumber}`,
+  description: "",
+  link: "",
+  sortOrder: images.length + 1,
+  active: true,
+};
+ 
+
+ 
+
+
+    // ========================================================
+    // SAVE CAROUSEL DOCUMENT
+    // ========================================================
+
+    const saveResult =
+      await createCarousel(
+        newCarousel
+      );
+
     if (
-      !result ||
-      !result.url
+      !saveResult ||
+      !saveResult.success
     ) {
       throw new Error(
-        result?.error ||
-          "Image upload did not return a URL."
+        saveResult?.error ||
+          "Could not save carousel."
       );
     }
 
@@ -235,22 +247,15 @@ export default function ProductImagesForm({
     // ADD TO LOCAL GALLERY
     // ========================================================
 
-    const newImage:
-      ProductImageType = {
-      id: imageId,
-    //  productId,
-      url: result.url,
-      name:
-        file.name ||
-        `Image ${imageNumber}`,
-      sortOrder:
-        images.length + 1,
-    };
-
     setImages((current) =>
-      normaliseImages([
+      normaliseCarousels([
         ...current,
-        newImage,
+        {
+          ...newCarousel,
+          id:
+            saveResult.id ||
+            newCarousel.id,
+        },
       ])
     );
   }
@@ -276,7 +281,7 @@ export default function ProductImagesForm({
 
     if (availableSlots <= 0) {
       alert(
-        `Maximum ${maxImages} images allowed.`
+        `Maximum ${maxImages} carousel images allowed.`
       );
       return;
     }
@@ -303,7 +308,7 @@ export default function ProductImagesForm({
     }
 
     // ========================================================
-    // LIMIT TO AVAILABLE SLOTS
+    // LIMIT FILES
     // ========================================================
 
     const filesToUpload =
@@ -351,14 +356,14 @@ export default function ProductImagesForm({
       }
     } catch (error) {
       console.error(
-        "PRODUCT_IMAGE_UPLOAD_ERROR",
+        "CAROUSEL_IMAGE_UPLOAD_ERROR",
         error
       );
 
       alert(
         error instanceof Error
           ? error.message
-          : "Failed to upload product image."
+          : "Failed to upload carousel image."
       );
     } finally {
       setUploading(false);
@@ -381,9 +386,6 @@ export default function ProductImagesForm({
 
     void handleFiles(files);
 
-    /*
-     * Allow selecting the same file again.
-     */
     if (fileInputRef.current) {
       fileInputRef.current.value =
         "";
@@ -391,24 +393,24 @@ export default function ProductImagesForm({
   }
 
   // ==========================================================
-  // REMOVE IMAGE
+  // REMOVE CAROUSEL
   // ==========================================================
 
   async function handleRemoveImage(
     index: number
   ) {
-    const image =
+    const carousel =
       images[index];
 
-    if (!image) {
+    if (!carousel) {
       return;
     }
 
     const confirmed =
       window.confirm(
         `Remove "${
-          image.name ||
-          "this image"
+          carousel.title ||
+          "this carousel"
         }"?`
       );
 
@@ -419,21 +421,27 @@ export default function ProductImagesForm({
     try {
       setSaving(true);
 
-      // ======================================================
-      // DELETE FROM STORAGE
-      // ======================================================
+      const result =
+        await deleteCarousel(
+          carousel.id
+        );
 
-      await deleteProductImage(
-        productId,
-        image.id
-      );
+      if (
+        !result ||
+        !result.success
+      ) {
+        throw new Error(
+          result?.error ||
+            "Could not delete carousel."
+        );
+      }
 
       // ======================================================
-      // REMOVE FROM LOCAL STATE
+      // REMOVE LOCAL
       // ======================================================
 
       setImages((current) =>
-        normaliseImages(
+        normaliseCarousels(
           current.filter(
             (_, itemIndex) =>
               itemIndex !== index
@@ -442,12 +450,14 @@ export default function ProductImagesForm({
       );
     } catch (error) {
       console.error(
-        "PRODUCT_IMAGE_DELETE_ERROR",
+        "CAROUSEL_DELETE_ERROR",
         error
       );
 
       alert(
-        "Failed to remove image."
+        error instanceof Error
+          ? error.message
+          : "Failed to remove carousel."
       );
     } finally {
       setSaving(false);
@@ -514,7 +524,7 @@ export default function ProductImagesForm({
         moved
       );
 
-      return normaliseImages(
+      return normaliseCarousels(
         next
       );
     });
@@ -531,25 +541,30 @@ export default function ProductImagesForm({
   }
 
   // ==========================================================
-  // IMAGE NAME
+  // UPDATE LOCAL FIELD
   // ==========================================================
 
-  function handleNameChange(
+  function updateField(
     index: number,
-    value: string
+    field:
+      | "title"
+      | "description"
+      | "link"
+      | "active",
+    value: string | boolean
   ) {
     setImages((current) =>
       current.map(
         (
-          image,
+          carousel,
           itemIndex
         ) =>
           itemIndex === index
             ? {
-                ...image,
-                name: value,
+                ...carousel,
+                [field]: value,
               }
-            : image
+            : carousel
       )
     );
   }
@@ -563,59 +578,65 @@ export default function ProductImagesForm({
       setSaving(true);
 
       const finalImages =
-        normaliseImages(
+        normaliseCarousels(
           images
         );
 
       // ======================================================
-      // SAVE IMAGE ARRAY TO PRODUCT DOCUMENT
+      // SAVE EACH CAROUSEL
       // ======================================================
 
-      const result =
-        await updateProductImages(
-          productId,
-          finalImages
-        );
-
-      if (
-        !result ||
-        !result.success
+      for (
+        const carousel of finalImages
       ) {
-        throw new Error(
-          result?.errors?.general ||
-            result?.errors?.images ||
-            "Could not save product images."
-        );
+        const result =
+          await updateCarousel(
+            carousel.id,
+            carousel
+          );
+
+        if (
+          !result ||
+          !result.success
+        ) {
+          throw new Error(
+            result?.error ||
+              `Could not save carousel "${carousel.title}".`
+          );
+        }
       }
 
-      const savedImages =
-        result.images ??
-        finalImages;
+      // ======================================================
+      // SAVE ORDER
+      // ======================================================
 
-      setImages(
-        normaliseImages(
-          savedImages
+      await updateCarouselOrder(
+        finalImages.map(
+          (carousel) => ({
+            id: carousel.id,
+            sortOrder:
+              carousel.sortOrder,
+          })
         )
       );
 
-      onSaved?.(
-        savedImages
+      setImages(
+        finalImages
       );
 
-      alert(
-        "Product images saved successfully."
-      );
+    toast.success("Carousel saved successfully");
     } catch (error) {
       console.error(
-        "PRODUCT_IMAGES_SAVE_ERROR",
+        "CAROUSEL_SAVE_ERROR",
         error
       );
+      toast.error("Something went wrong");
 
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Failed to save product images."
-      );
+      // alert(
+      //   error instanceof Error
+      //     ? error.message
+      //     : "Failed to save carousel images."
+      // );
     } finally {
       setSaving(false);
     }
@@ -650,14 +671,12 @@ export default function ProductImagesForm({
 
           <div>
             <h2 className="text-lg font-semibold text-gray-900">
-              Product Images
+              Carousel Images
             </h2>
 
-            {productName && (
-              <p className="mt-0.5 text-sm text-gray-500">
-                {productName}
-              </p>
-            )}
+            <p className="mt-0.5 text-sm text-gray-500">
+              Manage homepage carousel slides
+            </p>
           </div>
 
         </div>
@@ -685,12 +704,12 @@ export default function ProductImagesForm({
 
                 <div>
                   <p className="text-sm font-medium text-gray-700">
-                    Gallery Images
+                    Carousel Slides
                   </p>
 
                   <p className="text-xs text-gray-500">
                     {images.length} /{" "}
-                    {maxImages} images
+                    {maxImages} slides
                   </p>
                 </div>
 
@@ -731,7 +750,7 @@ export default function ProductImagesForm({
                   ) : (
                     <>
                       <ImagePlus className="h-4 w-4" />
-                      Add Image
+                      Add Slide
                     </>
                   )}
                 </button>
@@ -783,34 +802,34 @@ export default function ProductImagesForm({
                   <ImagePlus className="mb-3 h-10 w-10 text-gray-400" />
 
                   <p className="text-sm font-medium text-gray-700">
-                    Add product images
+                    Add carousel images
                   </p>
 
                   <p className="mt-1 text-xs text-gray-500">
                     Upload up to{" "}
-                    {maxImages} images
+                    {maxImages} slides
                   </p>
 
                   <p className="mt-1 text-xs text-gray-400">
-                    Images will be resized to maximum 500px
+                    Images will be resized before upload
                   </p>
                 </button>
               )}
 
               {/* ============================================
-                  IMAGE GRID
+                  CAROUSEL GRID
               ============================================ */}
 
               {images.length > 0 && (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 
                   {images.map(
                     (
-                      image,
+                      carousel,
                       index
                     ) => (
                       <div
-                        key={image.id}
+                        key={carousel.id}
                         draggable
                         onDragStart={() =>
                           handleDragStart(
@@ -845,19 +864,27 @@ export default function ProductImagesForm({
                         `}
                       >
 
-                        {/* IMAGE */}
+                        {/* ==================================
+                            IMAGE
+                        ================================== */}
 
-                        <div className="relative aspect-square bg-gray-100">
+                        <div className="relative aspect-[16/6] bg-gray-100">
 
                           <img
-                            src={image.url}
+                            src={
+                              carousel.image
+                            }
                             alt={
-                              image.name ||
-                              `Product image ${
+                              carousel.title ||
+                              `Carousel slide ${
                                 index + 1
                               }`
                             }
-                            className="h-full w-full object-cover"
+                            className="
+                              h-full
+                              w-full
+                              object-cover
+                            "
                           />
 
                           {/* SORT */}
@@ -929,20 +956,24 @@ export default function ProductImagesForm({
                               disabled:cursor-not-allowed
                               disabled:opacity-50
                             "
-                            title="Remove image"
+                            title="Remove carousel"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
 
                         </div>
 
-                        {/* IMAGE DETAILS */}
+                        {/* ==================================
+                            DETAILS
+                        ================================== */}
 
-                        <div className="space-y-3 p-3">
+                        <div className="space-y-4 p-4">
+
+                          {/* TITLE */}
 
                           <div>
                             <label
-                              htmlFor={`image-name-${image.id}`}
+                              htmlFor={`carousel-title-${carousel.id}`}
                               className="
                                 mb-1
                                 block
@@ -951,23 +982,24 @@ export default function ProductImagesForm({
                                 text-gray-600
                               "
                             >
-                              Image Name
+                              Title
                             </label>
 
                             <input
-                              id={`image-name-${image.id}`}
+                              id={`carousel-title-${carousel.id}`}
                               value={
-                                image.name
+                                carousel.title
                               }
                               onChange={(
                                 event
                               ) =>
-                                handleNameChange(
+                                updateField(
                                   index,
+                                  "title",
                                   event.target.value
                                 )
                               }
-                              placeholder="e.g. Front View"
+                              placeholder="Carousel title"
                               className="
                                 h-9
                                 w-full
@@ -986,25 +1018,156 @@ export default function ProductImagesForm({
                             />
                           </div>
 
-                          <div className="flex items-center justify-between">
+                          {/* DESCRIPTION */}
 
-                            <span className="text-xs text-gray-500">
-                              Sort order
-                            </span>
-
-                            <span
+                          <div>
+                            <label
+                              htmlFor={`carousel-description-${carousel.id}`}
                               className="
-                                rounded-md
-                                bg-gray-100
-                                px-2
-                                py-1
+                                mb-1
+                                block
                                 text-xs
-                                font-semibold
-                                text-gray-700
+                                font-medium
+                                text-gray-600
                               "
                             >
-                              {index + 1}
-                            </span>
+                              Description
+                            </label>
+
+                            <textarea
+                              id={`carousel-description-${carousel.id}`}
+                              value={
+                                carousel.description
+                              }
+                              onChange={(
+                                event
+                              ) =>
+                                updateField(
+                                  index,
+                                  "description",
+                                  event.target.value
+                                )
+                              }
+                              placeholder="Carousel description"
+                              rows={3}
+                              className="
+                                w-full
+                                rounded-md
+                                border
+                                border-gray-300
+                                bg-white
+                                px-3
+                                py-2
+                                text-sm
+                                outline-none
+                                transition
+                                resize-none
+                                focus:border-rose-400
+                                focus:ring-2
+                                focus:ring-rose-100
+                              "
+                            />
+                          </div>
+
+                          {/* LINK */}
+
+                          <div>
+                            <label
+                              htmlFor={`carousel-link-${carousel.id}`}
+                              className="
+                                mb-1
+                                block
+                                text-xs
+                                font-medium
+                                text-gray-600
+                              "
+                            >
+                              Link
+                            </label>
+
+                            <input
+                              id={`carousel-link-${carousel.id}`}
+                              value={
+                                carousel.link
+                              }
+                              onChange={(
+                                event
+                              ) =>
+                                updateField(
+                                  index,
+                                  "link",
+                                  event.target.value
+                                )
+                              }
+                              placeholder="/products"
+                              className="
+                                h-9
+                                w-full
+                                rounded-md
+                                border
+                                border-gray-300
+                                bg-white
+                                px-3
+                                text-sm
+                                outline-none
+                                transition
+                                focus:border-rose-400
+                                focus:ring-2
+                                focus:ring-rose-100
+                              "
+                            />
+                          </div>
+
+                          {/* ACTIVE + ORDER */}
+
+                          <div className="flex items-center justify-between">
+
+                            <label className="flex items-center gap-2">
+
+                              <input
+                                type="checkbox"
+                                checked={
+                                  carousel.active
+                                }
+                                onChange={(
+                                  event
+                                ) =>
+                                  updateField(
+                                    index,
+                                    "active",
+                                    event.target.checked
+                                  )
+                                }
+                                className="h-4 w-4"
+                              />
+
+                              <span className="text-sm text-gray-700">
+                                Active
+                              </span>
+
+                            </label>
+
+                            <div className="flex items-center gap-2">
+
+                              <span className="text-xs text-gray-500">
+                                Sort order
+                              </span>
+
+                              <span
+                                className="
+                                  rounded-md
+                                  bg-gray-100
+                                  px-2
+                                  py-1
+                                  text-xs
+                                  font-semibold
+                                  text-gray-700
+                                "
+                              >
+                                {index + 1}
+                              </span>
+
+                            </div>
 
                           </div>
 
@@ -1023,7 +1186,7 @@ export default function ProductImagesForm({
 
               {images.length > 1 && (
                 <p className="mt-4 text-xs text-gray-500">
-                  Drag and drop images to change their display order.
+                  Drag and drop slides to change their display order.
                 </p>
               )}
 
@@ -1106,7 +1269,7 @@ export default function ProductImagesForm({
             ) : (
               <>
                 <Save className="h-4 w-4" />
-                Save Images
+                Save Carousel
               </>
             )}
           </button>
@@ -1114,6 +1277,7 @@ export default function ProductImagesForm({
         </div>
 
       </div>
+
     </div>
   );
 }
