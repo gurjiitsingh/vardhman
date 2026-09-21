@@ -86,7 +86,7 @@ export const BargerMenu = () => {
             {/* Close Button */}
             <div
               translate="no"
-              className="flex w-full items-center justify-end border-b-2 border-zinc-50"
+              className="flex w-full items-center mt-20 pt-10 justify-end border-b-2 border-zinc-50"
             >
               <button
                 onClick={() => bargerMenuToggle(false)}
