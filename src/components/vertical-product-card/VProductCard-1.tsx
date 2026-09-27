@@ -11,7 +11,6 @@ import Image from "next/image";
 import { useState } from "react";
 import type { TnewModifierItemSchema } from "@/lib/types/modifierItemType";
 import { IoClose } from "react-icons/io5";
-import { useRouter } from "next/navigation";
 export default function ProductCardHorizontical({
   product,
   variants,
@@ -30,8 +29,6 @@ export default function ProductCardHorizontical({
   type ModifierItem = TnewModifierItemSchema & {
   id: string;
 };
-
-const router = useRouter();
   const { settings } = UseSiteContext();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<ProductType | null>(null);
@@ -189,47 +186,37 @@ const router = useRouter();
   "
 >
   {/* IMAGE */}
-  {/* IMAGE */}
-<div
-  onClick={() => router.push(`/products/${product.id}`)}
-  className="
-    relative
-    aspect-[3/4]
-    overflow-hidden
-    bg-neutral-100
-    cursor-pointer
-  "
->
-  <Image
-    src={product.image || "/placeholder.jpg"}
-    alt={product.name}
-    fill
-    className="
-      object-cover
-      transition
-      duration-700
-      group-hover:scale-105
-    "
-  />
-
-  {priceDiscounted && (
-    <div
+  <div className="relative aspect-[3/4] overflow-hidden bg-neutral-100">
+    <Image
+      src={product.image || "/placeholder.jpg"}
+      alt={product.name}
+      fill
       className="
-        absolute
-        top-3
-        left-3
-        bg-black
-        text-white
-        text-xs
-        px-3
-        py-1
-        rounded-full
+        object-cover
+        transition
+        duration-700
+        group-hover:scale-105
       "
-    >
-      SALE
-    </div>
-  )}
-</div>
+    />
+
+    {priceDiscounted && (
+      <div
+        className="
+          absolute
+          top-3
+          left-3
+          bg-black
+          text-white
+          text-xs
+          px-3
+          py-1
+          rounded-full
+        "
+      >
+        SALE
+      </div>
+    )}
+  </div>
 
   {/* CONTENT */}
   <div className="p-5">

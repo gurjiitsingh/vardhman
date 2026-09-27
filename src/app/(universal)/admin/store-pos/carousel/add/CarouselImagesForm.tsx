@@ -167,7 +167,7 @@ export default function CarouselImagesForm({
       await imageCompression(
         file,
         {
-          maxWidthOrHeight: 800,
+          maxWidthOrHeight: 1200,
           maxSizeMB: 0.5,
           initialQuality: 0.85,
           useWebWorker: true,

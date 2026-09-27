@@ -9,11 +9,24 @@ export type ProductImageType = {
   sortOrder: number;
 };
 
+export type ProductOptionValueType = {
+  id: string;
+  name: string;
+  color?: string;
+  sortOrder: number;
+};
+export type ProductOptionType = {
+  id: string;
+  name: string;
+  values: ProductOptionValueType[];
+};
+
 export type ProductType = {
   id: string;
   name: string;
   price: number;
   quantity: number | null;
+  discountEligible?: boolean;
   discountPrice: number | undefined;
   categoryId: string;
   masterCategoryId?: string;
@@ -24,6 +37,7 @@ export type ProductType = {
   sortOrder: number;
   image: string;
    images?: ProductImageType[];
+   options?: ProductOptionType[];
   isFeatured: boolean;
 favorite:boolean;
   flavors?: boolean;

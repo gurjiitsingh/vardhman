@@ -20,7 +20,7 @@ export default function ProductDetailClient({
 }: {
   product: ProductType;
 }) {
-  console.log("product.images---------------", product.images);
+  console.log("product.images---------------", product);
 
   const { settings } = UseSiteContext();
 
@@ -322,6 +322,74 @@ export default function ProductDetailClient({
                 )}
 
               </div>
+
+              {/* =================================================
+    PRODUCT OPTIONS
+================================================= */}
+
+{/* {product.options && product.options.length > 0 && (
+  <div className="mt-6 space-y-5">
+    {product.options.map((option) => (
+      <div key={option.id}>
+        <h3 className="mb-3 text-sm font-semibold text-neutral-900">
+          {option.name}
+        </h3>
+
+        <div className="flex flex-wrap gap-2">
+          {option.values
+            .sort(
+              (a, b) =>
+                (a.sortOrder ?? 0) -
+                (b.sortOrder ?? 0)
+            )
+            .map((value) => (
+              <button
+                key={value.id}
+                type="button"
+                className="
+                  rounded-lg
+                  border
+                  border-neutral-300
+                  bg-white
+                  px-4
+                  py-2
+                  text-sm
+                  text-neutral-800
+                  transition
+                  hover:border-neutral-900
+                  hover:bg-neutral-50
+                "
+              >
+                {value.name}
+              </button>
+            ))}
+        </div>
+      </div>
+    ))}
+  </div>
+)} */}
+
+{product.options?.map((option) => (
+  <div key={option.id} className="mt-6">
+    <h3 className="mb-3 text-sm font-semibold text-neutral-900">
+      {option.name}
+    </h3>
+
+    <div className="flex flex-wrap gap-2">
+      {[...option.values]
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map((value) => (
+          <button
+            key={value.id}
+            type="button"
+            className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm text-neutral-800 hover:border-neutral-900 hover:bg-neutral-50"
+          >
+            {value.name}
+          </button>
+        ))}
+    </div>
+  </div>
+))}
 
 <div className="flex w-full  rounded-xl py-2 mt-4">
 
