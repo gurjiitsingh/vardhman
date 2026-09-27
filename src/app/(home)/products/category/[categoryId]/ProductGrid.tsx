@@ -5,9 +5,10 @@ import Link from "next/link";
 import { ProductType } from "@/lib/types/productType";
 import { categoryType } from "@/lib/types/categoryType";
 import { MasterCategoryType } from "@/lib/types/masterCategoryType";
-import VProductCard_1 from "@/components/vertical-product-card/VProductCard-1";
+// import VProductCard_1 from "@/components/vertical-product-card/VProductCard-1";
 
 import { addOnType } from "@/lib/types/addOnType";
+import VProductCard_1 from "@/custom/cus-components/pictureCard/VProductCard-1";
 
 type Props = {
   products: ProductType[];
