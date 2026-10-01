@@ -266,6 +266,31 @@ export default function ProductOptionsEditor({
 
         <div className="flex flex-wrap items-center gap-2">
 
+            {/* ADD SIZE */}
+
+          <button
+            type="button"
+            onClick={() => addDefaultOption("Size")}
+            disabled={saving || hasOption("Size")}
+            className="
+            rounded-lg
+            bg-gray-900
+            px-4
+            py-2
+            text-sm
+            font-medium
+            text-white
+            shadow-sm
+            transition
+            hover:bg-gray-800
+            disabled:cursor-not-allowed
+            disabled:bg-gray-200
+            disabled:text-gray-400
+          "
+          >
+            + Add Size
+          </button>
+
           {/* ADD COLOR */}
 
           <button
@@ -291,30 +316,7 @@ export default function ProductOptionsEditor({
             + Add Color
           </button>
 
-          {/* ADD SIZE */}
-
-          <button
-            type="button"
-            onClick={() => addDefaultOption("Size")}
-            disabled={saving || hasOption("Size")}
-            className="
-            rounded-lg
-            bg-gray-900
-            px-4
-            py-2
-            text-sm
-            font-medium
-            text-white
-            shadow-sm
-            transition
-            hover:bg-gray-800
-            disabled:cursor-not-allowed
-            disabled:bg-gray-200
-            disabled:text-gray-400
-          "
-          >
-            + Add Size
-          </button>
+        
 
           {/* ADD CUSTOM OPTION */}
 

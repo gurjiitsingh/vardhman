@@ -174,8 +174,11 @@ const selectedModifiers =
         name: selectedValue.name, // XL, Red, etc.
         price: 0,
 
-        // Legacy modifier structure
+        // Required by cartModifierItem
         groupId: option.id,
+        groupName: option.name,
+
+        // Legacy-compatible fields
         createdAt: new Date().toISOString(),
         isDefault: false,
         priceMap: {},
@@ -449,7 +452,7 @@ const selectOptionValue = (
                 transition
                 ${
                   isSelected
-                    ? "border-neutral-900 bg-neutral-900 text-white ring-2 ring-neutral-900/20"
+                    ? "border-neutral-900 bg-neutral-400 text-white ring-2 ring-neutral-900/20"
                     : "border-neutral-300 bg-white text-neutral-800 hover:border-neutral-900 hover:bg-neutral-50"
                 }
               `}
