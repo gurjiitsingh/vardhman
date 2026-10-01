@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useEffect, useMemo } from "react";
 import { UseSiteContext } from "@/SiteContext/SiteContext";
@@ -6,12 +6,11 @@ import { ProductType } from "@/lib/types/productType";
 import { addOnType } from "@/lib/types/addOnType";
 import { cartProductType } from "@/lib/types/cartDataType";
 import { formatCurrencyNumber } from "@/utils/formatCurrency";
-// import CartButtonAdd from "../AddToCart/CartButtonAdd";
+import CartButtonAdd from "@/components/AddToCart/CartButtonAdd";
 import Image from "next/image";
 import { useState } from "react";
 import type { TnewModifierItemSchema } from "@/lib/types/modifierItemType";
 import { IoClose } from "react-icons/io5";
-import CartButtonAdd from "@/components/AddToCart/CartButtonAdd";
 import { useRouter } from "next/navigation";
 export default function VProductCard_1({
   product,
@@ -31,6 +30,7 @@ export default function VProductCard_1({
   type ModifierItem = TnewModifierItemSchema & {
   id: string;
 };
+
 const router = useRouter();
   const { settings } = UseSiteContext();
   const [isOpen, setIsOpen] = useState(false);
@@ -214,7 +214,8 @@ const router = useRouter();
 
   {priceDiscounted && (
     <div
-      className=" absolute
+      className="
+        absolute
         top-3
         left-3
         bg-black
@@ -224,12 +225,11 @@ const router = useRouter();
         py-1
         rounded-full
       "
-        >
+    >
       SALE
     </div>
   )}
 </div>
-   
 
   {/* CONTENT */}
   <div className="p-5">
