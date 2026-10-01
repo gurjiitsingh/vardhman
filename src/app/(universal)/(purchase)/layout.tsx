@@ -4,8 +4,8 @@ import SiteLayout from "@/components/SiteLayout";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "Food App, Carrer del Segle XX, 9, Horta-Guinardó, 08041 Barcelona, Spain",
-  description: "Carrer del Segle XX, 9, Horta-Guinardó, 08041 Barcelona, Spain",
+  title: "Vardhman Traders",
+  description: "Welcome to Vardhman Traders, a trusted name serving customers from the heart of Jalandhar. Located at E.P. 333, Inside Saidan Gate",
   other: {
     google: "notranslate",
   },
