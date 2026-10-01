@@ -14,9 +14,8 @@ switch (cardType) {
   case "1":
     Card = dynamic(() => import("../level-2/ProductCard-h1")); // horizontal
     break;
-     case "11":
-    Card = dynamic(() => import("../level-2/ProductMenuCard-h1_5")); // horizontal
-    break;
+     
+ 
       case "21":
     Card = dynamic(() => import("../level-2/ProductCard-h12")); // horizontal
     break;
