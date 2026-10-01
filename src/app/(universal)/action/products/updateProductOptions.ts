@@ -19,7 +19,7 @@ export async function updateProductOptions(
   productId: string,
   options: ProductOptionType[]
 ) {
-    console.log("opeiont----------------",options)
+  console.log("opeiont----------------", options)
   try {
     if (!productId) {
       throw new Error("Product ID is required.");
@@ -35,6 +35,7 @@ export async function updateProductOptions(
           .map((value, index) => ({
             id: value.id,
             name: value.name.trim(),
+            ...(value.color ? { color: value.color } : {}),
             sortOrder: index + 1,
           })),
       }));

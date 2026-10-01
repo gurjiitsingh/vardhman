@@ -32,7 +32,7 @@ const CartButtonAddBold = ({ cartProduct }: { cartProduct: cartProductType }) =>
 
   return (
     <>
-      <div className="flex justify-end w-[150px] shadow-md rounded-lg">
+      <div className="flex justify-end w-[150px]   rounded-lg">
         {quantity > 0 ? (
           <div className="flex justify-between  gap-2 w-full  px-1">
             <div className="bg-[#F3F2F0] px-[3px] pt-[1px] pb-[3px]  rounded-lg">

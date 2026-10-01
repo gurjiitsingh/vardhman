@@ -68,7 +68,9 @@ export default function ProductDetailClient({
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-
+const [selectedOptions, setSelectedOptions] = useState<
+  Record<string, string>
+>({});
   // =========================================================
   // SELECTED IMAGE
   // =========================================================
@@ -144,6 +146,54 @@ export default function ProductDetailClient({
       goToNextImage();
     }
   };
+
+  const requiredOptions = product.options ?? [];
+
+const allOptionsSelected = requiredOptions.every(
+  (option) => selectedOptions[option.id]
+);
+
+
+const selectedModifiers =
+  product.options
+    ?.map((option) => {
+      const selectedValueId =
+        selectedOptions[option.id];
+
+      if (!selectedValueId) return null;
+
+      const selectedValue = option.values.find(
+        (value) => value.id === selectedValueId
+      );
+
+      if (!selectedValue) return null;
+
+      return {
+        // Selected value
+        id: selectedValue.id,
+        name: selectedValue.name, // XL, Red, etc.
+        price: 0,
+
+        // Legacy modifier structure
+        groupId: option.id,
+        createdAt: new Date().toISOString(),
+        isDefault: false,
+        priceMap: {},
+        sortOrder: selectedValue.sortOrder ?? 0,
+        status: "published",
+      };
+    })
+    .filter((modifier) => modifier !== null) ?? [];
+
+const selectOptionValue = (
+  optionId: string,
+  valueId: string
+) => {
+  setSelectedOptions((current) => ({
+    ...current,
+    [optionId]: valueId,
+  }));
+};
 
   return (
     <>
@@ -369,6 +419,7 @@ export default function ProductDetailClient({
   </div>
 )} */}
 
+
 {product.options?.map((option) => (
   <div key={option.id} className="mt-6">
     <h3 className="mb-3 text-sm font-semibold text-neutral-900">
@@ -378,42 +429,77 @@ export default function ProductDetailClient({
     <div className="flex flex-wrap gap-2">
       {[...option.values]
         .sort((a, b) => a.sortOrder - b.sortOrder)
-        .map((value) => (
-          <button
-            key={value.id}
-            type="button"
-            className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm text-neutral-800 hover:border-neutral-900 hover:bg-neutral-50"
-          >
-            {value.name}
-          </button>
-        ))}
+        .map((value) => {
+          const isColor =
+            option.name.trim().toLowerCase() === "color";
+
+          const isSelected =
+            selectedOptions[option.id] === value.id;
+
+          return (
+            <button
+              key={value.id}
+              type="button"
+              onClick={() =>
+                selectOptionValue(option.id, value.id)
+              }
+              className={`
+                flex items-center gap-2 rounded-lg
+                border px-4 py-1 text-sm
+                transition
+                ${
+                  isSelected
+                    ? "border-neutral-900 bg-neutral-900 text-white ring-2 ring-neutral-900/20"
+                    : "border-neutral-300 bg-white text-neutral-800 hover:border-neutral-900 hover:bg-neutral-50"
+                }
+              `}
+            >
+              {isColor && value.color && (
+                <span
+                  className={`
+                    h-7 w-7 rounded-full border
+                    ${
+                      isSelected
+                        ? "border-white"
+                        : "border-neutral-300"
+                    }
+                  `}
+                  style={{
+                    backgroundColor: value.color,
+                  }}
+                />
+              )}
+
+              <span>{value.name}</span>
+            </button>
+          );
+        })}
     </div>
   </div>
 ))}
 
 <div className="flex w-full  rounded-xl py-2 mt-4">
 
-              <CartButtonAddBold
-                cartProduct={{
-                  id: product.id,
-                  productMode: product.id,
-                  price: product.price,
-                 // basePrice: product.basePrice,
-                  quantity: 1,
-                  currentStock: product.currentStock ?  product.currentStock : null,
-                  categoryId: product.id,
-                  productCat: product.id,
-                  name: product.id,
-                  image: product.id,
-                  taxRate: product.taxRate,
-                  taxType: product.taxType,
-                 // parentProductId: product.parren,
-                  modifiers: [],
-                 
-                  note: "",
-                  uniqueKey: product.id.toString(),
-                }}
-              />
+<CartButtonAddBold
+  cartProduct={{
+    id: product.id,
+    productMode: product.id,
+    price: product.price,
+    quantity: 1,
+    currentStock: product.currentStock
+      ? product.currentStock
+      : null,
+    categoryId: product.id,
+    productCat: product.id,
+    name: product.name,
+    image: product.images?.[0]?.url ?? "",
+    taxRate: product.taxRate,
+    taxType: product.taxType,
+    modifiers: selectedModifiers,
+    note: "",
+    uniqueKey: product.id.toString(),
+  }}
+/>
 </div>
               {/* DESCRIPTION */}
 
